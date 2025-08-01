@@ -1,0 +1,147 @@
+/* ----------------------------------------------------------------------------
+ * Apphold - Online Software Telemetry
+ *
+ * @package     Apphold
+ * @author      A.Tselegidis <alextselegidis@gmail.com>
+ * @copyright   Copyright (c) Alex Tselegidis
+ * @license     https://opensource.org/licenses/GPL-3.0 - GPLv3
+ * @link        https://github.com/alextselegidis/apphold
+ * ---------------------------------------------------------------------------- */
+
+:root {
+    --bs-link-color: #563ea9;
+    --bs-link-color-rgb: 86, 62, 169;
+    --bs-link-hover-color: #2d1e60;
+    --bs-link-hover-color-rgb: 45, 30, 96;
+    --bs-body-color: #333333;
+    --bs-body-color-rgb: 51, 51, 51;
+    --bs-dropdown-item-padding-y: 0.75rem;
+    --bs-dropdown-link-hover-bg: var(--bs-secondary-bg);
+    --bs-body-font-weight: 300;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+.btn {
+    min-width: 150px;
+    max-height: 48px;
+}
+
+.bg-hover:hover {
+    background-color: #eee;
+}
+
+[class*=btn-outline-] {
+    border-width: 1px !important;
+}
+
+.btn,
+.nav-link,
+.dropdown-item {
+    text-transform: uppercase !important;
+}
+
+.nav-link {
+    color: var(--bs-body-color);
+}
+
+.dropdown-menu {
+    border: 1px solid #e3e3e3;
+}
+
+.dropdown-item {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.dropdown-item:hover {
+    background: var(--bs-secondary-bg);
+}
+
+.modal-dialog {
+    box-shadow: none;
+}
+
+.sidebar-width {
+    width: 230px;
+    padding-right: 15px;
+}
+
+.table {
+    width: auto;
+    table-layout: auto;
+}
+
+.table td, .table th {
+    padding: 1rem;
+    white-space: nowrap; /* Prevent wrapping */
+    width: 1%; /* Shrink to fit content */
+}
+
+
+@media (min-width: 992px) {
+    .rounded-lg-4 {
+        border-radius: var(--bs-border-radius-xl) !important;
+    }
+
+    .min-vh-lg-unset {
+        min-height: unset !important;
+    }
+
+    .w-lg-auto {
+        width: auto !important;
+    }
+
+    .table-responsive {
+        overflow: visible;
+    }
+}
+
+.card-hover-move {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card-hover-move:hover {
+    transform: translateY(-5px);
+}
+
+.card .card-footer {
+    a, form {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+body .choices {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+    min-width: 220px;
+    text-align: left;
+    height: 50px;
+}
+
+body .choices__inner {
+    border: none;
+    padding: .75rem 1.5rem;
+    height: 48px;
+    background-color: #f8f9fb;
+    font-size: 1rem;
+    /*font-size: 0.875rem;*/
+    color: var(--bs-body-color);
+}
+
+body .choices__list--single {
+    padding-top: 2px
+}
+
+body .choices__placeholder {
+    opacity: .6;
+}
+

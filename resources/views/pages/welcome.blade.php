@@ -1,0 +1,34 @@
+{{--
+/* ----------------------------------------------------------------------------
+ * Apphold - Online Software Telemetry
+ *
+ * @package     Apphold
+ * @author      A.Tselegidis <alextselegidis@gmail.com>
+ * @copyright   Copyright (c) Alex Tselegidis
+ * @license     https://opensource.org/licenses/GPL-3.0 - GPLv3
+ * @link        https://apphold.org
+ * ---------------------------------------------------------------------------- */
+--}}
+
+@extends('layouts.message-layout')
+
+@section('pageTitle')
+    {{__('welcome')}}
+@endsection
+
+@section('content')
+    <div class="text-center">
+        <h1 class="display-6 mb-3">
+            Welcome To
+        </h1>
+
+        <p class="fs-5 text-muted mb-5">
+            Online Software Telemetry
+        </p>
+
+        <a href="{{route('login')}}" class="btn btn-primary" style="min-width: 12rem">
+            {{__('continue')}}
+        </a>
+    </div>
+@endsection
+
