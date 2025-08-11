@@ -60,6 +60,7 @@
                 <div class="w-100">
                     @include('shared.show-id', ['label' => __('id'), 'value' => $user->id])
                     @include('shared.show-link', ['label' => __('email'), 'href' => 'mailto:' . $user->email, 'value' => $user->email])
+                    @include('shared.show-text', ['label' => __('role'), 'value' => __($user->role)])
                 </div>
                 <div class="w-100">
                     @include('shared.show-date', ['label' => __('created'), 'value' => $user->created_at])

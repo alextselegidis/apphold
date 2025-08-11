@@ -12,8 +12,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RoleEnum;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -21,6 +23,8 @@ class UsersController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('viewAny', User::class);
+
         $query = User::query();
 
         $q = $request->query('q');
@@ -46,6 +50,8 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', User::class);
+
         $request->validate([
             'name' => 'required',
         ]);
@@ -64,6 +70,8 @@ class UsersController extends Controller
 
     public function show(Request $request, User $user)
     {
+        Gate::authorize('view', $user);
+
         return view('pages.users-show', [
             'user' => $user,
         ]);
@@ -71,6 +79,8 @@ class UsersController extends Controller
 
     public function edit(Request $request, User $user)
     {
+        Gate::authorize('update', $user);
+
         return view('pages.users-edit', [
             'user' => $user,
         ]);
@@ -78,6 +88,8 @@ class UsersController extends Controller
 
     public function update(Request $request, User $user)
     {
+        Gate::authorize('update', $user);
+
         $request->validate([
             'name' => 'required|min:2',
             'email' => 'required|min:2',
@@ -91,6 +103,15 @@ class UsersController extends Controller
             unset($payload['password'], $payload['password_confirmation']);
         }
 
+        if (
+            $user->id === $request->user()->id &&
+            $user->role === RoleEnum::ADMIN->value &&
+            $payload['role'] !== RoleEnum::ADMIN->value &&
+            User::where('role', RoleEnum::ADMIN->value)->count() === 1
+        ) {
+            return back()->with('error', __('cannot_deactivate_last_admin'));
+        }
+
         $user->fill($payload);
 
         $user->save();
@@ -100,8 +121,20 @@ class UsersController extends Controller
 
     public function destroy(Request $request, User $user)
     {
+        Gate::authorize('delete', User::class);
+
         if ($user->id === request()->user()->id) {
             return redirect()->route('users')->with('error', __('cannotDeleteCurrentUser'));
+        }
+
+        // Check if user is an admin
+        if ($user->role === RoleEnum::ADMIN->value) {
+            // Count how many admins are left
+            $adminCount = User::where('role', RoleEnum::ADMIN->value)->count();
+
+            if ($adminCount <= 1) {
+                return back()->with('error', __('cannot_deactivate_last_admin'));
+            }
         }
 
         $user->delete();

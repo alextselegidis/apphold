@@ -24,7 +24,7 @@ class DashboardController extends Controller
 
         $q = $request->query('q');
         $length = $request->query('length', 25);
-        $showInactive = $request->query('show_inactive', false);
+        $showInactive = $request->query('show_inactive', true);
         $projectId = $request->query('project_id');
 
         if (!$showInactive) {

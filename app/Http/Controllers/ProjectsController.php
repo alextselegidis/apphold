@@ -14,11 +14,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectsController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('viewAny', Project::class);
+
         $query = Project::query();
 
         $q = $request->query('q');
@@ -44,6 +47,8 @@ class ProjectsController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Project::class);
+
         $request->validate([
             'name' => 'required',
         ]);
@@ -59,6 +64,8 @@ class ProjectsController extends Controller
 
     public function show(Request $request, Project $project)
     {
+        Gate::authorize('view', $project);
+
         return view('pages.projects-show', [
             'project' => $project,
         ]);
@@ -66,6 +73,8 @@ class ProjectsController extends Controller
 
     public function edit(Request $request, Project $project)
     {
+        Gate::authorize('update', $project);
+
         return view('pages.projects-edit', [
             'project' => $project,
         ]);
@@ -73,6 +82,8 @@ class ProjectsController extends Controller
 
     public function update(Request $request, Project $project)
     {
+        Gate::authorize('update', $project);
+
         $request->validate([
             'name' => 'required|min:2',
         ]);
@@ -88,6 +99,8 @@ class ProjectsController extends Controller
 
     public function destroy(Request $request, Project $project)
     {
+        Gate::authorize('delete', $project);
+
         $project->delete();
 
         return redirect()->back()->with('success', __('record_deleted_message'));

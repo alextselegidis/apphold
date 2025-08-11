@@ -65,6 +65,11 @@
                                 {!! sort_link('email', __('email')) !!}
                             </a>
                         </th>
+                        <th style="width: 30%">
+                            <a href="{{ route('users', ['sort' => 'role', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}">
+                                {!! sort_link('role', __('role')) !!}
+                            </a>
+                        </th>
                         <th style="width: 15%">
                             <a href="{{ route('users', ['sort' => 'is_active', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}">
                                 {!! sort_link('is_active', __('active')) !!}
@@ -86,6 +91,9 @@
                             </td>
                             <td>
                                 @include('shared.email-value', ['value' => $user->email])
+                            </td>
+                            <td>
+                                {{__($user->role)}}
                             </td>
                             <td>
                                 {{__($user->is_active ? 'yes' : 'no')}}

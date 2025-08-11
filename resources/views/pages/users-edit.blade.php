@@ -10,6 +10,8 @@
  * ---------------------------------------------------------------------------- */
 --}}
 
+@php use App\Enums\RoleEnum; @endphp
+
 @extends('layouts.main-layout')
 
 @section('pageTitle')
@@ -49,7 +51,8 @@
 
         <div class="flex-grow-1">
 
-            <form action="{{route('users.update', ['user' => $user->id])}}" method="POST" style="max-width: 800px;" class="m-auto">
+            <form action="{{route('users.update', ['user' => $user->id])}}" method="POST" style="max-width: 800px;"
+                  class="m-auto">
                 @csrf
                 @method('PUT')
 
@@ -59,7 +62,7 @@
                         <span class="text-danger">*</span>
                     </label>
                     <input type="text" id="name" name="name" class="form-control" required
-                           value="{{ old('name', $user?->name ?? null) }}">
+                           value="{{ old('name', $user?->name ?? NULL) }}">
                     @error('name')
                     <span class="form-text text-danger">{{ $message }}</span>
                     @enderror
@@ -71,8 +74,25 @@
                         <span class="text-danger">*</span>
                     </label>
                     <input type="email" id="email" name="email" class="form-control" required
-                           value="{{ old('email', $user?->email ?? null) }}">
+                           value="{{ old('email', $user?->email ?? NULL) }}">
                     @error('email')
+                    <span class="form-text text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="role" class="form-label">
+                        {{ __('role') }}
+                        <span class="text-danger">*</span>
+                    </label>
+                    <select name="role" id="role" class="form-select" required>
+                        @foreach(RoleEnum::values() as $role)
+                            <option value="{{$role}}" @if($user?->role === $role) selected @endif>
+                                {{__($role)}}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('role')
                     <span class="form-text text-danger">{{ $message }}</span>
                     @enderror
                 </div>
@@ -116,7 +136,6 @@
     </div>
 
     @include('modals.create-modal', ['route' => route('users.store')])
-
 
 @endsection
 

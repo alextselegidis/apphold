@@ -24,7 +24,7 @@
 
     <li class="nav-item mb-3">
         <a class="nav-link px-0 py-2 d-flex align-items-center gap-3 text-primary" href="{{ route('observers') }}">
-            <i class="bi bi-link-45deg fs-4 text-muted"></i>
+            <i class="bi bi-eye fs-4 text-muted"></i>
             {{__('observers')}}
         </a>
     </li>

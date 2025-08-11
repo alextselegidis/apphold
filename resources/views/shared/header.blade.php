@@ -24,11 +24,13 @@
                                     {{ Auth::user()->name }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                     <li >
+                                    @can('viewAny', Setting::class)
+                                     <li>
                                          <a class="dropdown-item" href="{{route('settings')}}">
                                              {{__('settings')}}
                                          </a>
                                      </li>
+                                    @endcan
                                     <li>
                                         <a class="dropdown-item" href="{{route('account')}}">
                                             {{__('account')}}
