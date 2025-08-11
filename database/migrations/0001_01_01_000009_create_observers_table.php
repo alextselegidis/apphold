@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('observers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('project_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->text('title')->nullable();

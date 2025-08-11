@@ -19,12 +19,16 @@ use DOMDocument;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
+use Throwable;
 
 class ObserversController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('viewAny', Observer::class);
+
         $query = Observer::query();
 
         $q = $request->query('q');
@@ -40,8 +44,6 @@ class ObserversController extends Controller
             $query->orderBy($sort, $direction);
         }
 
-        $query->where('user_id', $request->user()->id);
-
         $observers = $query->cursorPaginate(25);
 
         return view('pages.observers', [
@@ -52,6 +54,8 @@ class ObserversController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Observer::class);
+
         $request->validate([
             'url' => 'required|url',
         ]);
@@ -60,8 +64,6 @@ class ObserversController extends Controller
 
         $pageInfo = $this->fetchPageInfo($payload['url']);
 
-        $pageInfo['user_id'] = $request->user()->id;
-
         $observer = Observer::create($pageInfo);
 
         return redirect(route('observers.edit', ['observer' => $observer->id]));
@@ -69,9 +71,7 @@ class ObserversController extends Controller
 
     public function show(Request $request, Observer $observer)
     {
-        if ($observer->user_id !== $request->user()->id) {
-            abort(403);
-        }
+        Gate::authorize('view', $observer);
 
         return view('pages.observers-show', [
             'observer' => $observer,
@@ -80,9 +80,7 @@ class ObserversController extends Controller
 
     public function edit(Request $request, Observer $observer)
     {
-        if ($observer->user_id !== $request->user()->id) {
-            abort(403);
-        }
+        Gate::authorize('update', $observer);
 
         return view('pages.observers-edit', [
             'observer' => $observer,
@@ -93,9 +91,7 @@ class ObserversController extends Controller
 
     public function update(Request $request, Observer $observer)
     {
-        if ($observer->user_id !== $request->user()->id) {
-            abort(403);
-        }
+        Gate::authorize('update', $observer);
 
         $request->validate([
             'url' => 'required|min:2',
@@ -107,7 +103,6 @@ class ObserversController extends Controller
 
         $pageInfo = $this->fetchPageInfo($payload['url']);
 
-        $payload['user_id'] = $request->user()->id;
         $payload['favicon'] = $pageInfo['favicon'];
         $payload['og_image'] = $pageInfo['og_image'];
 
@@ -122,9 +117,7 @@ class ObserversController extends Controller
 
     public function destroy(Request $request, Observer $observer)
     {
-        if ($observer->user_id !== $request->user()->id) {
-            abort(403);
-        }
+        Gate::authorize('delete', $observer);
 
         $observer->delete();
 
@@ -133,9 +126,7 @@ class ObserversController extends Controller
 
     public function toggle(Request $request, Observer $observer)
     {
-        if ($observer->user_id !== $request->user()->id) {
-            abort(403);
-        }
+        Gate::authorize('update', $observer);
 
         $observer->is_active = !$observer->is_active;
         $observer->save();
@@ -144,15 +135,6 @@ class ObserversController extends Controller
 
     function fetchPageInfo(string $url): array
     {
-        // Fetch HTML
-        $response = Http::get($url);
-        $html = $response->body();
-
-        libxml_use_internal_errors(true);
-        $dom = new DOMDocument();
-        $dom->loadHTML($html);
-        libxml_clear_errors();
-
         $data = [
             'title' => '',
             'url' => $url,
@@ -165,16 +147,32 @@ class ObserversController extends Controller
             'with_ssl_verification' => true,
         ];
 
+        // Fetch HTML
+        try {
+            $response = Http::withOptions([
+                'allow_redirects' => true, // follow redirects
+            ])->get($url);
+        } catch (Throwable $e) {
+            return $data;
+        }
+
+        $html = $response->body();
+
+        libxml_use_internal_errors(true);
+        $dom = new DOMDocument();
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+
         // <title>
         $titleTag = $dom->getElementsByTagName('title');
         if ($titleTag->length) {
-            $data['title'] = $titleTag->item(0)->nodeValue;
+            $data['title'] = trim($titleTag->item(0)->nodeValue);
         }
 
         // <meta> tags
         foreach ($dom->getElementsByTagName('meta') as $meta) {
             $name = strtolower($meta->getAttribute('name') ?: $meta->getAttribute('property'));
-            $content = $meta->getAttribute('content');
+            $content = trim($meta->getAttribute('content'));
 
             switch ($name) {
                 case 'description':
