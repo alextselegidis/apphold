@@ -82,6 +82,9 @@ body {
 .table td, .table th {
     padding: 1rem;
     white-space: nowrap; /* Prevent wrapping */
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
     width: 1%; /* Shrink to fit content */
 }
 
@@ -100,7 +103,7 @@ body {
     }
 
     .table-responsive {
-        overflow: visible;
+        /*overflow: visible;*/
     }
 }
 
@@ -131,9 +134,8 @@ body .choices__inner {
     border: none;
     padding: .75rem 1.5rem;
     height: 48px;
-    background-color: #f8f9fb;
+    background-color: #f0f1f3;
     font-size: 1rem;
-    /*font-size: 0.875rem;*/
     color: var(--bs-body-color);
 }
 
