@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('project_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
-            $table->string('title')->nullable();
+            $table->text('title')->nullable();
             $table->string('url');
             $table->integer('interval')->default(60);
             $table->text('emails')->nullable();

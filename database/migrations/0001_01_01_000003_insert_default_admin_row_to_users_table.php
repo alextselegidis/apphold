@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoleEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -14,12 +15,12 @@ return new class extends Migration {
     {
         $table = DB::table('users');
 
-        if ( ! $table->count())
-        {
+        if (!$table->count()) {
             $table->insert([
                 'name' => 'Admin',
                 'email' => 'admin@example.org',
                 'password' => Hash::make('12345678'),
+                'role' => RoleEnum::ADMIN->value,
             ]);
         }
     }
