@@ -229,5 +229,9 @@
     "toggle": "Toggle",
     "interval": "Interval (Minutes)",
     "ssl_verification": "SSL Verification",
+    "cannot_deactivate_last_admin": "You cannot deactivate the last admin.",
+    "admin": "Admin",
+    "view_project": "View Project",
+    "edit_project": "Edit Project",
     "EOF": "EOF"
 }
