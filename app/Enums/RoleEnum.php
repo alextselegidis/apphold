@@ -12,8 +12,14 @@
 
 namespace App\Enums;
 
+namespace App\Enums;
+
+use App\Traits\EnumValues;
+
 enum RoleEnum: string
 {
+    use EnumValues;
+
     case ADMIN = 'admin';
     case USER = 'user';
 }
