@@ -20,7 +20,7 @@ document.querySelectorAll('.toast').forEach(function (toastEl) {
 
 // Auto-focus create modal input
 
-document.getElementById('create-modal').addEventListener('shown.bs.modal', (event) => {
+document.getElementById('create-modal')?.addEventListener('shown.bs.modal', (event) => {
     return event.target.querySelector('input:not([type="hidden"])').focus();
 });
 
