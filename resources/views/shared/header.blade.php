@@ -46,6 +46,13 @@
                                     {{ __('tags') }}
                                 </a>
                             </li>
+                            <!-- Incidents -->
+                            <li class="nav-item">
+                                <a class="nav-link nav-menu-item text-white py-lg-4 {{ request()->routeIs('incidents*') ? 'fw-bold' : '' }}" href="{{ route('incidents') }}">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    {{ __('incidents') }}
+                                </a>
+                            </li>
                         </ul>
                         <!-- Global Search -->
                         <form action="{{ route('dashboard') }}" method="GET" class="d-flex me-lg-3 my-2 my-lg-0">

@@ -12,6 +12,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Incident;
 use App\Models\Observer;
 use App\Models\User;
 use Exception;
@@ -56,10 +57,26 @@ class ObserversPingCommand extends Command
 
                 if ($response->status() !== 200) {
                     $failedObservers[] = $observer;
+
+                    Incident::create([
+                        'user_id' => $observer->user_id,
+                        'observer_id' => $observer->id,
+                        'type' => 'site_down',
+                        'message' => "HTTP status code: {$response->status()}",
+                        'status_code' => $response->status(),
+                    ]);
                 }
             } catch (Exception $e) {
                 $this->error("⚠️ Error pinging {$url}: " . $e->getMessage());
                 $failedObservers[] = $observer;
+
+                Incident::create([
+                    'user_id' => $observer->user_id,
+                    'observer_id' => $observer->id,
+                    'type' => 'connection_error',
+                    'message' => $e->getMessage(),
+                    'status_code' => null,
+                ]);
             }
         }
 

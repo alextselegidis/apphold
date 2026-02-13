@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\IncidentsController;
 use App\Http\Controllers\ObserversController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
@@ -68,6 +69,16 @@ Route::middleware('auth')->group(function () {
     ]);
 
     Route::get('/observers/{observer}/toggle', [ObserversController::class, 'toggle'])->name('observers.toggle');
+
+    // IncidentsController
+
+    Route::get('/incidents', [IncidentsController::class, 'index'])->name('incidents');
+    Route::get('/incidents/{incident}/edit', [IncidentsController::class, 'edit'])->name('incidents.edit');
+    Route::put('/incidents/{incident}', [IncidentsController::class, 'update'])->name('incidents.update');
+    Route::delete('/incidents/{incident}', [IncidentsController::class, 'destroy'])->name('incidents.destroy');
+    Route::get('/incidents/{incident}/comments', [IncidentsController::class, 'comments'])->name('incidents.comments');
+    Route::post('/incidents/{incident}/comments', [IncidentsController::class, 'storeComment'])->name('incidents.comments.store');
+    Route::delete('/incidents/{incident}/comments/{comment}', [IncidentsController::class, 'destroyComment'])->name('incidents.comments.destroy');
 
     // Setup routes (Admin only)
 
