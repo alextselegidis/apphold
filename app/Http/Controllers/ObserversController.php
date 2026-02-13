@@ -101,14 +101,14 @@ class ObserversController extends Controller
 
         $payload = $request->input();
 
-        $pageInfo = $this->fetchPageInfo($payload['url']);
-        // Only update favicon if we got a new one
-        if (!empty($pageInfo['favicon'])) {
-            $payload['favicon'] = $pageInfo['favicon'];
-        }
-        // Only update og_image if we got a new one
-        if (!empty($pageInfo['og_image'])) {
-            $payload['og_image'] = $pageInfo['og_image'];
+        // Always fetch new page info when URL changes
+        $urlChanged = $observer->url !== $payload['url'];
+
+        if ($urlChanged) {
+            $pageInfo = $this->fetchPageInfo($payload['url']);
+            $payload['title'] = $pageInfo['title'] ?: $payload['title'];
+            $payload['favicon'] = $pageInfo['favicon'] ?: $observer->favicon;
+            $payload['og_image'] = $pageInfo['og_image'] ?: $observer->og_image;
         }
 
         $observer->fill($payload);
@@ -128,6 +128,12 @@ class ObserversController extends Controller
         }
 
         $observer->delete();
+
+        $referer = $request->headers->get('referer', '');
+
+        if (str_contains($referer, '/dashboard')) {
+            return redirect('dashboard')->with('success', __('record_deleted_message'));
+        }
 
         return redirect('observers')->with('success', __('record_deleted_message'));
     }
