@@ -27,28 +27,28 @@
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <!-- Dashboard -->
                             <li class="nav-item">
-                                <a class="nav-link nav-menu-item text-white py-lg-4 {{ request()->routeIs('dashboard') ? 'fw-bold' : '' }}" href="{{ route('dashboard') }}">
+                                <a class="nav-link text-white py-lg-4 px-lg-4 {{ request()->routeIs('dashboard') ? 'fw-bold' : '' }}" href="{{ route('dashboard') }}">
                                     <i class="bi bi-house me-2"></i>
                                     {{ __('dashboard') }}
                                 </a>
                             </li>
                             <!-- Observers -->
                             <li class="nav-item">
-                                <a class="nav-link nav-menu-item text-white py-lg-4 {{ request()->routeIs('observers*') ? 'fw-bold' : '' }}" href="{{ route('observers') }}">
+                                <a class="nav-link text-white py-lg-4 px-lg-4 {{ request()->routeIs('observers*') ? 'fw-bold' : '' }}" href="{{ route('observers') }}">
                                     <i class="bi bi-eye me-2"></i>
                                     {{ __('observers') }}
                                 </a>
                             </li>
                             <!-- Tags -->
                             <li class="nav-item">
-                                <a class="nav-link nav-menu-item text-white py-lg-4 {{ request()->routeIs('tags*') ? 'fw-bold' : '' }}" href="{{ route('tags') }}">
+                                <a class="nav-link text-white py-lg-4 px-lg-4 {{ request()->routeIs('tags*') ? 'fw-bold' : '' }}" href="{{ route('tags') }}">
                                     <i class="bi bi-tags me-2"></i>
                                     {{ __('tags') }}
                                 </a>
                             </li>
                             <!-- Incidents -->
                             <li class="nav-item">
-                                <a class="nav-link nav-menu-item text-white py-lg-4 {{ request()->routeIs('incidents*') ? 'fw-bold' : '' }}" href="{{ route('incidents') }}">
+                                <a class="nav-link text-white py-lg-4 px-lg-4 {{ request()->routeIs('incidents*') ? 'fw-bold' : '' }}" href="{{ route('incidents') }}">
                                     <i class="bi bi-exclamation-triangle me-2"></i>
                                     {{ __('incidents') }}
                                 </a>
