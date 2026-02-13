@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 class Observer extends Model
 {
     protected $fillable = [
-        'project_id',
+        'user_id',
         'title',
         'url',
         'interval',
@@ -34,9 +34,9 @@ class Observer extends Model
         'with_ssl_verification' => 'boolean',
     ];
 
-    public function project()
+    public function user()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(User::class);
     }
 
     public function tags()
@@ -52,16 +52,5 @@ class Observer extends Model
     public function getFormattedUrlAttribute()
     {
         return str_replace(['https://', 'http://'], '', rtrim($this->url, '/'));
-    }
-
-    public static function toOptions($where = null)
-    {
-        $query = self::query();
-
-        if ($where) {
-            $query->where($where);
-        }
-
-        return $query->selectRaw('title AS label, id AS value')->get();
     }
 }

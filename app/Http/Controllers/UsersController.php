@@ -34,6 +34,7 @@ class UsersController extends Controller
         }
 
         $sort = $request->query('sort');
+
         $direction = $request->query('direction');
 
         if ($sort && $direction) {
@@ -64,17 +65,7 @@ class UsersController extends Controller
             'password' => Hash::make(Str::random(8)),
         ]);
 
-        return redirect(route('users.edit', ['user' => $user->id]));
-        // return redirect(request()->fullUrlWithoutQuery('create'));
-    }
-
-    public function show(Request $request, User $user)
-    {
-        Gate::authorize('view', $user);
-
-        return view('pages.users-show', [
-            'user' => $user,
-        ]);
+        return redirect(route('setup.users.edit', ['user' => $user->id]));
     }
 
     public function edit(Request $request, User $user)
@@ -105,7 +96,7 @@ class UsersController extends Controller
 
         if (
             $user->id === $request->user()->id &&
-            $user->role === RoleEnum::ADMIN->value &&
+            $user->isAdmin() &&
             $payload['role'] !== RoleEnum::ADMIN->value &&
             User::where('role', RoleEnum::ADMIN->value)->count() === 1
         ) {
@@ -116,29 +107,25 @@ class UsersController extends Controller
 
         $user->save();
 
-        return redirect(route('users.show', $user->id))->with('success', __('record_saved_message'));
+        return redirect(route('setup.users.edit', $user->id))->with('success', __('record_saved_message'));
     }
 
     public function destroy(Request $request, User $user)
     {
-        Gate::authorize('delete', User::class);
+        Gate::authorize('delete', $user);
 
         if ($user->id === request()->user()->id) {
-            return redirect()->route('users')->with('error', __('cannotDeleteCurrentUser'));
+            return redirect()->route('setup.users')->with('error', __('cannotDeleteCurrentUser'));
         }
-
         // Check if user is an admin
-        if ($user->role === RoleEnum::ADMIN->value) {
-            // Count how many admins are left
-            $adminCount = User::where('role', RoleEnum::ADMIN->value)->count();
-
-            if ($adminCount <= 1) {
+        if ($user->isAdmin()) {
+            if (User::where('role', RoleEnum::ADMIN->value)->count() <= 1) {
                 return back()->with('error', __('cannot_deactivate_last_admin'));
             }
         }
 
         $user->delete();
 
-        return redirect()->back()->with('success', __('record_deleted_message'));
+        return redirect(route('setup.users'))->with('success', __('record_deleted_message'));
     }
 }

@@ -13,11 +13,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
-use Illuminate\Http\Request;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
+    /**
+     * @throws AuthorizationException
+     */
     public function index(Request $request)
     {
         Gate::authorize('viewAny', Setting::class);
@@ -42,6 +46,6 @@ class SettingsController extends Controller
             'default_timezone' => $request->input('default_timezone'),
         ]);
 
-        return redirect(route('settings'))->with('success', __('recordsSavedMessage'));
+        return redirect(route('setup.localization'))->with('success', __('record_saved_message'));
     }
 }

@@ -11,7 +11,6 @@
  * ---------------------------------------------------------------------------- */
 
 namespace App\Models;
-
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\RoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,19 +23,17 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes tha are mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = ['name', 'email', 'password', 'is_active', 'role'];
-
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
      */
     protected $hidden = ['password', 'remember_token'];
-
     /**
      * Get the attributes that should be cast.
      *
@@ -51,20 +48,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function projects()
+    public function tags()
     {
-        return $this->hasMany(Project::class);
+        return $this->hasMany(Tag::class);
     }
 
-    public static function toOptions($where = null)
+    public function observers()
     {
-        $query = self::query();
-
-        if ($where) {
-            $query->where($where);
-        }
-
-        return $query->selectRaw('name AS label, id AS value')->get();
+        return $this->hasMany(Observer::class);
     }
 
     public function isAdmin(): bool

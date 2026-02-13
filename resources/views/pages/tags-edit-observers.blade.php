@@ -56,29 +56,36 @@
         <div class="flex-grow-1">
             <div class="card border-0 shadow-sm rounded-3">
                 <div class="card-body p-4">
-                    <form action="{{ route('tags.update', ['tag' => $tag->id]) }}" method="POST" id="edit-form">
-                        @csrf
-                        @method('PUT')
-                        <div class="mb-3">
-                            <label for="name" class="form-label text-dark small fw-medium">
-                                <span class="text-danger">*</span> {{ __('name') }}
-                            </label>
-                            <input type="text" id="name" name="name" class="form-control" required
-                                   value="{{ old('name', $tag?->name ?? null) }}">
-                            @error('name')
-                            <span class="form-text text-danger">{{ $message }}</span>
-                            @enderror
+                    @if($observers->count())
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-muted small fw-medium">{{ __('title') }}</th>
+                                        <th class="text-muted small fw-medium">{{ __('url') }}</th>
+                                        <th class="text-muted small fw-medium">{{ __('active') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($observers as $observer)
+                                        <tr style="cursor: pointer;" onclick="window.location='{{ route('observers.edit', $observer->id) }}'">
+                                            <td>{{ $observer->title ?: '-' }}</td>
+                                            <td>{{ Str::limit($observer->url, 50) }}</td>
+                                            <td>
+                                                @if($observer->is_active)
+                                                    <span class="badge bg-success">{{ __('yes') }}</span>
+                                                @else
+                                                    <span class="badge bg-secondary">{{ __('no') }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                    </form>
-                </div>
-                <!-- Card Footer with Save Button -->
-                <div class="card-footer bg-body-secondary border-top text-end py-3 px-4">
-                    <button type="button" class="btn btn-outline-secondary me-2" onclick="history.back()">
-                        {{ __('cancel') }}
-                    </button>
-                    <button type="submit" form="edit-form" class="btn btn-dark">
-                        {{ __('save') }}
-                    </button>
+                    @else
+                        <p class="text-muted mb-0">{{ __('no_records_found') }}</p>
+                    @endif
                 </div>
             </div>
         </div>

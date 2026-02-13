@@ -31,12 +31,14 @@ class TagsController extends Controller
         }
 
         $sort = $request->query('sort');
+
         $direction = $request->query('direction');
 
         if ($sort && $direction) {
             $query->orderBy($sort, $direction);
         }
 
+        $query->where('user_id', $request->user()->id);
         $tags = $query->cursorPaginate(25);
 
         return view('pages.tags', [
@@ -57,19 +59,10 @@ class TagsController extends Controller
 
         $tag = Tag::create([
             'name' => $payload['name'],
+            'user_id' => $request->user()->id,
         ]);
 
         return redirect(route('tags.edit', ['tag' => $tag->id]));
-        // return redirect(request()->fullUrlWithoutQuery('create'));
-    }
-
-    public function show(Request $request, Tag $tag)
-    {
-        Gate::authorize('view', $tag);
-
-        return view('pages.tags-show', [
-            'tag' => $tag,
-        ]);
     }
 
     public function edit(Request $request, Tag $tag)
@@ -95,7 +88,7 @@ class TagsController extends Controller
 
         $tag->save();
 
-        return redirect(route('tags.show', $tag->id))->with('success', __('record_saved_message'));
+        return redirect(route('tags.edit', $tag->id))->with('success', __('record_saved_message'));
     }
 
     public function destroy(Request $request, Tag $tag)
@@ -104,6 +97,16 @@ class TagsController extends Controller
 
         $tag->delete();
 
-        return redirect()->back()->with('success', __('record_deleted_message'));
+        return redirect('tags')->with('success', __('record_deleted_message'));
+    }
+
+    public function observers(Request $request, Tag $tag)
+    {
+        Gate::authorize('update', $tag);
+
+        return view('pages.tags-edit-observers', [
+            'tag' => $tag,
+            'observers' => $tag->observers,
+        ]);
     }
 }

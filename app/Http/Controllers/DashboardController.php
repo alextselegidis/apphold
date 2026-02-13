@@ -13,7 +13,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Observer;
-use App\Models\Project;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -22,41 +21,45 @@ class DashboardController extends Controller
     {
         $query = Observer::query();
 
-        $q = $request->query('q');
-        $length = $request->query('length', 25);
-        $showInactive = $request->query('show_inactive', true);
-        $projectId = $request->query('project_id');
+        $q = $request->query("q");
+        $length = $request->query("length", 25);
+        $showInactive = $request->query("show_inactive", false);
+        $tagId = $request->query("tag_id");
 
         if (!$showInactive) {
-            $query->where('is_active', true);
+            $query->where("is_active", true);
         }
 
         if ($q) {
-            $query->where('title', 'like', '%' . $q . '%');
+            $query->where("title", "like", "%" . $q . "%");
         }
 
-        if ($projectId) {
-            $query->where('project_id', $projectId);
+        if ($tagId) {
+            $query->whereHas("tags", fn($q) => $q->where("tags.id", $tagId));
         }
 
-        $sort = $request->query('sort', 'created_at');
-        $direction = $request->query('direction', 'desc');
+        $sort = $request->query("sort", "created_at");
+        $direction = $request->query("direction", "desc");
 
         if ($sort && $direction) {
             $query->orderBy($sort, $direction);
         }
 
+        $query->where("user_id", $request->user()->id);
+
         $total = $query->count();
 
         $observers = $query->cursorPaginate($length);
 
-        return view('pages.dashboard', [
-            'observers' => $observers,
-            'q' => $q,
-            'length' => $total > $length ? $length : null,
-            'showInactive' => $showInactive,
-            'projectOptions' => Project::toOptions(),
-            'selectedProjectId' => $projectId,
+        $tags = $request->user()->tags()->orderBy("name")->get();
+
+        return view("pages.dashboard", [
+            "observers" => $observers,
+            "q" => $q,
+            "length" => $total > $length ? $length : null,
+            "showInactive" => $showInactive,
+            "tags" => $tags,
+            "selectedTagId" => $tagId,
         ]);
     }
 }

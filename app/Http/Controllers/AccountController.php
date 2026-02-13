@@ -35,12 +35,12 @@ class AccountController extends Controller
         $user->name = $validated['name'];
         $user->email = $validated['email'];
 
-        if ($validated['password']) {
+        if (!empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }
 
         $user->save();
 
-        return back()->with('success', 'Account updated successfully.');
+        return back()->with('success', __('record_saved_message'));
     }
 }

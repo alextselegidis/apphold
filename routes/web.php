@@ -8,10 +8,10 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\RecoveryController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
 
@@ -53,34 +53,39 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/about', [AboutController::class, 'index'])->name('about');
 
-    // SettingsController
-
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
-    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
-
-    // UsersController
-
-    Route::resource('users', UsersController::class)->names([
-        'index' => 'users',
-    ]);
-
     // TagsController
 
-    Route::resource('tags', TagsController::class)->names([
+    Route::resource('tags', TagsController::class)->except(['show'])->names([
         'index' => 'tags',
     ]);
 
-    // ProjectsController
-
-    Route::resource('projects', ProjectsController::class)->names([
-        'index' => 'projects',
-    ]);
+    Route::get('/tags/{tag}/observers', [TagsController::class, 'observers'])->name('tags.observers');
 
     // ObserversController
 
-    Route::resource('observers', ObserversController::class)->names([
+    Route::resource('observers', ObserversController::class)->except(['show'])->names([
         'index' => 'observers',
     ]);
 
     Route::get('/observers/{observer}/toggle', [ObserversController::class, 'toggle'])->name('observers.toggle');
+
+    // Setup routes (Admin only)
+
+    Route::middleware(AdminMiddleware::class)->prefix('setup')->group(function () {
+        // SettingsController (Localization)
+
+        Route::get('/localization', [SettingsController::class, 'index'])->name('setup.localization');
+        Route::put('/localization', [SettingsController::class, 'update'])->name('setup.localization.update');
+
+        // UsersController
+
+        Route::resource('users', UsersController::class)->except(['show'])->names([
+            'index' => 'setup.users',
+            'create' => 'setup.users.create',
+            'store' => 'setup.users.store',
+            'edit' => 'setup.users.edit',
+            'update' => 'setup.users.update',
+            'destroy' => 'setup.users.destroy',
+        ]);
+    });
 });

@@ -233,5 +233,19 @@
     "admin": "Admin",
     "view_project": "View Project",
     "edit_project": "Edit Project",
-    "EOF": "EOF"
+    "mark_as_archived": "Marked as archived",
+    "current_password": "Current Password",
+    "new_password": "New Password",
+    "leave_blank_to_keep": "leave blank to keep current",
+    "unarchive": "Unarchive",
+    "setup": "Setup",
+    "details": "Details",
+    "observers": "Observers",
+    "verify_ssl_certificate": "Verify SSL Certificate",
+    "enable_monitoring": "Enable Monitoring",
+    "user_is_active": "User is active",
+    "leave_blank_to_keep_current": "Leave blank to keep current",
+    "password_confirmation": "Password Confirmation",
+    "seconds": "Seconds",
+    "load_more": "Load More"
 }
