@@ -13,9 +13,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\IncidentComment;
-use Orion\Http\Controllers\Controller;
 
-class IncidentCommentApiV1Controller extends Controller
+class IncidentCommentApiV1Controller extends BaseApiV1Controller
 {
     protected $model = IncidentComment::class;
 

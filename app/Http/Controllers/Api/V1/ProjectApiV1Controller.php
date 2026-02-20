@@ -13,9 +13,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Project;
-use Orion\Http\Controllers\Controller;
 
-class ProjectApiV1Controller extends Controller
+class ProjectApiV1Controller extends BaseApiV1Controller
 {
     protected $model = Project::class;
 

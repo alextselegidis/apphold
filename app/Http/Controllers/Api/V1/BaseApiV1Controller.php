@@ -12,24 +12,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\User;
+use Orion\Http\Controllers\Controller;
 
-class UserApiV1Controller extends BaseApiV1Controller
+abstract class BaseApiV1Controller extends Controller
 {
-    protected $model = User::class;
-
-    public function filterableBy(): array
+    /**
+     * The guard used for authentication.
+     */
+    protected function guard(): string
     {
-        return ['name', 'email', 'role', 'is_active', 'created_at', 'updated_at'];
-    }
-
-    public function sortableBy(): array
-    {
-        return ['id', 'name', 'email', 'role', 'is_active', 'created_at', 'updated_at'];
-    }
-
-    public function searchableBy(): array
-    {
-        return ['name', 'email'];
+        return 'sanctum';
     }
 }

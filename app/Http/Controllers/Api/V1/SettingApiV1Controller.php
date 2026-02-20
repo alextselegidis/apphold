@@ -13,9 +13,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Setting;
-use Orion\Http\Controllers\Controller;
 
-class SettingApiV1Controller extends Controller
+class SettingApiV1Controller extends BaseApiV1Controller
 {
     protected $model = Setting::class;
 

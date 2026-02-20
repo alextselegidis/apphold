@@ -13,9 +13,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Observer;
-use Orion\Http\Controllers\Controller;
 
-class ObserverApiV1Controller extends Controller
+class ObserverApiV1Controller extends BaseApiV1Controller
 {
     protected $model = Observer::class;
 

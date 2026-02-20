@@ -13,9 +13,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Tag;
-use Orion\Http\Controllers\Controller;
 
-class TagApiV1Controller extends Controller
+class TagApiV1Controller extends BaseApiV1Controller
 {
     protected $model = Tag::class;
 
