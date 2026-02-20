@@ -2,7 +2,115 @@ openapi: 3.0.3
 info:
   title: Apphold API
   version: 1.0.0
-  description: These are the OpenAPI specs that describe the REST API of Timecrack.
+  description: |
+    REST API for Apphold - Online Software Telemetry powered by Laravel Orion. Authenticate using Bearer tokens generated from your account settings.
+
+    ## Authentication
+    All API endpoints require authentication via Bearer token. Generate tokens from your Account page.
+
+    Include the token in the Authorization header:
+    ```
+    Authorization: Bearer YOUR_API_TOKEN
+    ```
+
+    ## Authorization
+    - All authenticated users can READ all resources
+    - Only admins can CREATE, UPDATE, or DELETE Settings and Users
+
+    ## Pagination
+    List endpoints support pagination via query parameters:
+    - `page` - Page number (default: 1)
+    - `per_page` - Items per page (default: 15, max: 100)
+
+    ## Filtering (GET requests)
+    Use the `filter` query parameter to filter results:
+    ```
+    ?filter[status]=active
+    ?filter[created_at]=2024-01-01
+    ```
+
+    ## Sorting (GET requests)
+    Use the `sort` query parameter. Prefix with `-` for descending order:
+    ```
+    ?sort=-created_at
+    ?sort=name,-updated_at
+    ```
+
+    ## Including Relations
+    Use the `include` query parameter to include related resources:
+    ```
+    ?include=user,tags
+    ```
+
+    ## Advanced Search (POST /search)
+    Each resource has a `/search` endpoint that accepts a JSON body with advanced options:
+
+    ### Scopes
+    Apply model scopes:
+    ```json
+    {
+      "scopes": [
+        {"name": "active"},
+        {"name": "whereStatus", "parameters": ["new"]}
+      ]
+    }
+    ```
+
+    ### Filters
+    Filter with operators (`=`, `!=`, `<`, `<=`, `>`, `>=`, `like`, `not like`, `in`, `not in`):
+    ```json
+    {
+      "filters": [
+        {"field": "status", "operator": "=", "value": "active"},
+        {"field": "created_at", "operator": ">=", "value": "2024-01-01"},
+        {"field": "type", "operator": "in", "value": ["site_down", "connection_error"]},
+        {"type": "or", "field": "message", "operator": "like", "value": "%timeout%"}
+      ]
+    }
+    ```
+
+    ### Search
+    Full-text search across searchable fields:
+    ```json
+    {
+      "search": {
+        "value": "connection error"
+      }
+    }
+    ```
+
+    ### Sort
+    Sort by multiple fields:
+    ```json
+    {
+      "sort": [
+        {"field": "created_at", "direction": "desc"},
+        {"field": "status", "direction": "asc"}
+      ]
+    }
+    ```
+
+    ### Aggregates
+    Get aggregate data on relationships:
+    ```json
+    {
+      "aggregates": [
+        {"relation": "incidents", "type": "count"},
+        {
+          "relation": "incidents",
+          "type": "count",
+          "filters": [{"field": "status", "operator": "=", "value": "new"}]
+        }
+      ]
+    }
+    ```
+    Supported aggregate types: `count`, `sum`, `avg`, `min`, `max`, `exists`
+
+    ## Batch Operations
+    - `POST /batch` - Create multiple resources
+    - `PATCH /batch` - Update multiple resources
+    - `DELETE /batch` - Delete multiple resources
+
   termsOfService: https://apphold.org/terms
   contact:
     name: Apphold
@@ -11,16 +119,1817 @@ info:
   license:
     name: GPL-3.0
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
+
 servers:
   - url: http://localhost/api/v1
+    description: Local development server
+  - url: https://your-domain.com/api/v1
+    description: Production server
+
 tags:
-  - name: example
+  - name: Me
+    description: Current authenticated user operations
+  - name: Observers
+    description: Monitor web application endpoints
+  - name: Tags
+    description: Organize observers with tags
+  - name: Incidents
+    description: Track and manage incidents
+  - name: Incident Comments
+    description: Comments on incidents
+  - name: Projects
+    description: Group observers into projects
+  - name: Settings
+    description: Application settings (admin only for write)
+  - name: Users
+    description: User management (admin only for write)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Token
+      description: API token generated from account settings
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+    PerPageParam:
+      name: per_page
+      in: query
+      description: Number of items per page (max 100)
+      schema:
+        type: integer
+        default: 15
+        minimum: 1
+        maximum: 100
+    SortParam:
+      name: sort
+      in: query
+      description: |
+        Sort field(s). Prefix with `-` for descending order.
+        Multiple fields can be comma-separated.
+      schema:
+        type: string
+      examples:
+        ascending:
+          value: title
+          summary: Sort by title ascending
+        descending:
+          value: -created_at
+          summary: Sort by created_at descending
+        multiple:
+          value: title,-created_at
+          summary: Sort by title asc, then created_at desc
+    IncludeParam:
+      name: include
+      in: query
+      description: Comma-separated list of relations to include
+      schema:
+        type: string
+    WithCountParam:
+      name: with_count
+      in: query
+      description: Comma-separated list of relations to count
+      schema:
+        type: string
+    IdPathParam:
+      name: id
+      in: path
+      required: true
+      description: Resource ID
+      schema:
+        type: integer
+
+  schemas:
+    SearchRequest:
+      type: object
+      description: Advanced search request body for POST /search endpoints
+      properties:
+        scopes:
+          type: array
+          description: Model scopes to apply
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Scope name
+              parameters:
+                type: array
+                description: Scope parameters
+                items:
+                  type: string
+            required:
+              - name
+        filters:
+          type: array
+          description: Filter conditions
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [and, or]
+                default: and
+                description: Logical operator for combining with previous filters
+              field:
+                type: string
+                description: Field name to filter on
+              operator:
+                type: string
+                enum: ['=', '!=', '<', '<=', '>', '>=', 'like', 'not like', 'in', 'not in']
+                default: '='
+              value:
+                oneOf:
+                  - type: string
+                  - type: number
+                  - type: boolean
+                  - type: array
+                    items:
+                      type: string
+                description: Filter value
+            required:
+              - field
+              - value
+        search:
+          type: object
+          description: Full-text search
+          properties:
+            value:
+              type: string
+              description: Search term
+          required:
+            - value
+        sort:
+          type: array
+          description: Sort configuration
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              direction:
+                type: string
+                enum: [asc, desc]
+                default: asc
+            required:
+              - field
+        aggregates:
+          type: array
+          description: Aggregate calculations on relationships
+          items:
+            type: object
+            properties:
+              relation:
+                type: string
+                description: Relationship name
+              type:
+                type: string
+                enum: [count, sum, avg, min, max, exists]
+              field:
+                type: string
+                description: Field for sum/avg/min/max aggregates
+              filters:
+                type: array
+                description: Filters to apply on the relation
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                    operator:
+                      type: string
+                    value:
+                      type: string
+            required:
+              - relation
+              - type
+
+    BatchCreateRequest:
+      type: object
+      properties:
+        resources:
+          type: array
+          description: Array of resources to create
+          items:
+            type: object
+      required:
+        - resources
+
+    BatchUpdateRequest:
+      type: object
+      properties:
+        resources:
+          type: array
+          description: Array of resources to update (must include id)
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+            required:
+              - id
+      required:
+        - resources
+
+    BatchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+
+    Observer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user_id:
+          type: integer
+        title:
+          type: string
+        url:
+          type: string
+          format: uri
+        interval:
+          type: integer
+          description: Check interval in minutes
+        notes:
+          type: string
+          nullable: true
+        emails:
+          type: string
+          nullable: true
+        favicon:
+          type: string
+          nullable: true
+        og_image:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+        with_ssl_verification:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user_id:
+          type: integer
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+
+    Incident:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user_id:
+          type: integer
+        observer_id:
+          type: integer
+        assigned_user_id:
+          type: integer
+          nullable: true
+        type:
+          type: string
+        status:
+          type: string
+        message:
+          type: string
+          nullable: true
+        status_code:
+          type: integer
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+
+    IncidentComment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        incident_id:
+          type: integer
+        user_id:
+          type: integer
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+
+    Setting:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        value:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+
+    PaginatedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items: {}
+        links:
+          type: object
+          properties:
+            first:
+              type: string
+            last:
+              type: string
+            prev:
+              type: string
+              nullable: true
+            next:
+              type: string
+              nullable: true
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+            from:
+              type: integer
+            last_page:
+              type: integer
+            per_page:
+              type: integer
+            to:
+              type: integer
+            total:
+              type: integer
+
+  responses:
+    Unauthorized:
+      description: Unauthenticated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Unauthenticated.
+
+    Forbidden:
+      description: Forbidden - Admin access required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: This action is unauthorized.
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found.
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+security:
+  - bearerAuth: []
+
 paths:
-  /example:
+  # Me (Current User)
+  /me:
     get:
       tags:
-        - example
-      summary: Example
+        - Me
+      summary: Get current user profile
+      description: Returns the authenticated user's profile information.
       responses:
         '200':
-          description: OK
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    patch:
+      tags:
+        - Me
+      summary: Update current user profile
+      description: Update the authenticated user's profile information.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                password_confirmation:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /me/tokens:
+    get:
+      tags:
+        - Me
+      summary: List personal access tokens
+      description: Returns all personal access tokens for the authenticated user.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        last_used_at:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        created_at:
+                          type: string
+                          format: date-time
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Me
+      summary: Create personal access token
+      description: Create a new personal access token for the authenticated user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: A descriptive name for the token
+                  example: My API Token
+      responses:
+        '201':
+          description: Token created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: object
+                        description: The token object
+                      plain_text_token:
+                        type: string
+                        description: The plain text token (only shown once)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /me/tokens/{tokenId}:
+    delete:
+      tags:
+        - Me
+      summary: Revoke personal access token
+      description: Revoke (delete) a personal access token.
+      parameters:
+        - name: tokenId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Token revoked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Token revoked successfully.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Observers
+  /observers:
+    get:
+      tags:
+        - Observers
+      summary: List all observers
+      description: |
+        Returns a paginated list of observers with filtering, sorting, and relation loading.
+        
+        **Filterable by:** title, url, is_active, user_id, created_at, updated_at
+        
+        **Sortable by:** id, title, url, is_active, created_at, updated_at
+        
+        **Searchable:** title, url, notes
+        
+        **Includes:** user, tags
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PerPageParam'
+        - $ref: '#/components/parameters/SortParam'
+        - $ref: '#/components/parameters/IncludeParam'
+        - $ref: '#/components/parameters/WithCountParam'
+        - name: filter[title]
+          in: query
+          schema:
+            type: string
+        - name: filter[url]
+          in: query
+          schema:
+            type: string
+        - name: filter[is_active]
+          in: query
+          schema:
+            type: boolean
+        - name: filter[user_id]
+          in: query
+          schema:
+            type: integer
+        - name: filter[created_at]
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: filter[updated_at]
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Observer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Observers
+      summary: Create an observer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Observer'
+      responses:
+        '201':
+          description: Observer created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Observer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /observers/search:
+    post:
+      tags:
+        - Observers
+      summary: Advanced search observers
+      description: |
+        Search observers with advanced filtering, scopes, sorting, and aggregates.
+        Searchable fields: title, url, notes
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PerPageParam'
+        - $ref: '#/components/parameters/IncludeParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+            examples:
+              simpleSearch:
+                summary: Simple text search
+                value:
+                  search:
+                    value: "example.com"
+              filteredSearch:
+                summary: Search with filters
+                value:
+                  filters:
+                    - field: is_active
+                      operator: "="
+                      value: true
+                    - field: created_at
+                      operator: ">="
+                      value: "2024-01-01"
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Observer'
+
+  /observers/batch:
+    post:
+      tags:
+        - Observers
+      summary: Create multiple observers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchCreateRequest'
+      responses:
+        '200':
+          description: Batch created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchResponse'
+
+    patch:
+      tags:
+        - Observers
+      summary: Update multiple observers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchUpdateRequest'
+      responses:
+        '200':
+          description: Batch updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchResponse'
+
+    delete:
+      tags:
+        - Observers
+      summary: Delete multiple observers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchUpdateRequest'
+      responses:
+        '200':
+          description: Batch deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchResponse'
+
+  /observers/{id}:
+    get:
+      tags:
+        - Observers
+      summary: Get a specific observer
+      parameters:
+        - $ref: '#/components/parameters/IdPathParam'
+        - $ref: '#/components/parameters/IncludeParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Observer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - Observers
+      summary: Update an observer
+      parameters:
+        - $ref: '#/components/parameters/IdPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Observer'
+      responses:
+        '200':
+          description: Observer updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Observer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Observers
+      summary: Delete an observer
+      parameters:
+        - $ref: '#/components/parameters/IdPathParam'
+      responses:
+        '200':
+          description: Observer deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Tags
+  /tags:
+    get:
+      tags:
+        - Tags
+      summary: List all tags
+      description: |
+        Returns a paginated list of tags with filtering, sorting, and relation loading.
+        
+        **Filterable by:** name, user_id, created_at, updated_at
+        
+        **Sortable by:** id, name, created_at, updated_at
+        
+        **Searchable:** name
+        
+        **Includes:** observers
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/PerPageParam'
+        - $ref: '#/components/parameters/SortParam'
+        - $ref: '#/components/parameters/IncludeParam'
+        - name: filter[name]
+          in: query
+          schema:
+            type: string
+        - name: filter[user_id]
+          in: query
+          schema:
+            type: integer
+        - name: filter[created_at]
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: filter[updated_at]
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: filter[name]
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Tag'
+
+    post:
+      tags:
+        - Tags
+      summary: Create a new tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: Tag created
+
+  /tags/search:
+    post:
+      tags:
+        - Tags
+      summary: Search tags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          description: Search results
+
+  /tags/batch:
+    post:
+      tags:
+        - Tags
+      summary: Create multiple tags
+      responses:
+        '200':
+          description: Batch created
+
+    patch:
+      tags:
+        - Tags
+      summary: Update multiple tags
+      responses:
+        '200':
+          description: Batch updated
+
+    delete:
+      tags:
+        - Tags
+      summary: Delete multiple tags
+      responses:
+        '200':
+          description: Batch deleted
+
+  /tags/{id}:
+    get:
+      tags:
+        - Tags
+      summary: Get a specific tag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Tag'
+
+    patch:
+      tags:
+        - Tags
+      summary: Update a tag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tag updated
+
+    delete:
+      tags:
+        - Tags
+      summary: Delete a tag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tag deleted
+
+  # Incidents
+  /incidents:
+    get:
+      tags:
+        - Incidents
+      summary: List all incidents
+      description: |
+        **Filterable by:** type, status, user_id, observer_id, assigned_user_id, status_code, created_at, updated_at
+        
+        **Sortable by:** id, type, status, status_code, created_at, updated_at
+        
+        **Searchable:** message
+        
+        **Includes:** user, observer, assignedUser, comments
+      parameters:
+        - name: include
+          in: query
+          schema:
+            type: string
+          example: observer,comments
+        - name: filter[status]
+          in: query
+          schema:
+            type: string
+        - name: filter[type]
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Incident'
+
+    post:
+      tags:
+        - Incidents
+      summary: Create a new incident
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Incident'
+      responses:
+        '201':
+          description: Incident created
+
+  /incidents/search:
+    post:
+      tags:
+        - Incidents
+      summary: Search incidents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          description: Search results
+
+  /incidents/batch:
+    post:
+      tags:
+        - Incidents
+      summary: Create multiple incidents
+      responses:
+        '200':
+          description: Batch created
+
+    patch:
+      tags:
+        - Incidents
+      summary: Update multiple incidents
+      responses:
+        '200':
+          description: Batch updated
+
+    delete:
+      tags:
+        - Incidents
+      summary: Delete multiple incidents
+      responses:
+        '200':
+          description: Batch deleted
+
+  /incidents/{id}:
+    get:
+      tags:
+        - Incidents
+      summary: Get a specific incident
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: include
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Incident'
+
+    patch:
+      tags:
+        - Incidents
+      summary: Update an incident
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Incident updated
+
+    delete:
+      tags:
+        - Incidents
+      summary: Delete an incident
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Incident deleted
+
+  # Incident Comments
+  /incident-comments:
+    get:
+      tags:
+        - Incident Comments
+      summary: List all incident comments
+      description: |
+        **Filterable by:** incident_id, user_id, created_at, updated_at
+        
+        **Sortable by:** id, created_at, updated_at
+        
+        **Searchable:** content
+        
+        **Includes:** incident, user
+      parameters:
+        - name: include
+          in: query
+          schema:
+            type: string
+          example: incident,user
+        - name: filter[incident_id]
+          in: query
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/IncidentComment'
+
+    post:
+      tags:
+        - Incident Comments
+      summary: Create a new incident comment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncidentComment'
+      responses:
+        '201':
+          description: Comment created
+
+  /incident-comments/search:
+    post:
+      tags:
+        - Incident Comments
+      summary: Search incident comments
+      responses:
+        '200':
+          description: Search results
+
+  /incident-comments/batch:
+    post:
+      tags:
+        - Incident Comments
+      summary: Create multiple comments
+      responses:
+        '200':
+          description: Batch created
+
+    patch:
+      tags:
+        - Incident Comments
+      summary: Update multiple comments
+      responses:
+        '200':
+          description: Batch updated
+
+    delete:
+      tags:
+        - Incident Comments
+      summary: Delete multiple comments
+      responses:
+        '200':
+          description: Batch deleted
+
+  /incident-comments/{id}:
+    get:
+      tags:
+        - Incident Comments
+      summary: Get a specific comment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+
+    patch:
+      tags:
+        - Incident Comments
+      summary: Update a comment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Comment updated
+
+    delete:
+      tags:
+        - Incident Comments
+      summary: Delete a comment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Comment deleted
+
+  # Projects
+  /projects:
+    get:
+      tags:
+        - Projects
+      summary: List all projects
+      description: |
+        **Filterable by:** name, created_at, updated_at
+        
+        **Sortable by:** id, name, created_at, updated_at
+        
+        **Searchable:** name
+        
+        **Includes:** observers
+      parameters:
+        - name: include
+          in: query
+          schema:
+            type: string
+          example: observers
+        - name: filter[name]
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Project'
+
+    post:
+      tags:
+        - Projects
+      summary: Create a new project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '201':
+          description: Project created
+
+  /projects/search:
+    post:
+      tags:
+        - Projects
+      summary: Search projects
+      responses:
+        '200':
+          description: Search results
+
+  /projects/batch:
+    post:
+      tags:
+        - Projects
+      summary: Create multiple projects
+      responses:
+        '200':
+          description: Batch created
+
+    patch:
+      tags:
+        - Projects
+      summary: Update multiple projects
+      responses:
+        '200':
+          description: Batch updated
+
+    delete:
+      tags:
+        - Projects
+      summary: Delete multiple projects
+      responses:
+        '200':
+          description: Batch deleted
+
+  /projects/{id}:
+    get:
+      tags:
+        - Projects
+      summary: Get a specific project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+
+    patch:
+      tags:
+        - Projects
+      summary: Update a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Project updated
+
+    delete:
+      tags:
+        - Projects
+      summary: Delete a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Project deleted
+
+  # Settings (Admin only for write operations)
+  /settings:
+    get:
+      tags:
+        - Settings
+      summary: List all settings
+      description: |
+        **Filterable by:** name, created_at, updated_at
+        
+        **Sortable by:** id, name, created_at, updated_at
+        
+        **Searchable:** name, value
+      parameters:
+        - name: filter[name]
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Setting'
+
+    post:
+      tags:
+        - Settings
+      summary: Create a new setting (Admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Setting'
+      responses:
+        '201':
+          description: Setting created
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /settings/search:
+    post:
+      tags:
+        - Settings
+      summary: Search settings
+      responses:
+        '200':
+          description: Search results
+
+  /settings/batch:
+    post:
+      tags:
+        - Settings
+      summary: Create multiple settings (Admin only)
+      responses:
+        '200':
+          description: Batch created
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    patch:
+      tags:
+        - Settings
+      summary: Update multiple settings (Admin only)
+      responses:
+        '200':
+          description: Batch updated
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    delete:
+      tags:
+        - Settings
+      summary: Delete multiple settings (Admin only)
+      responses:
+        '200':
+          description: Batch deleted
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /settings/{id}:
+    get:
+      tags:
+        - Settings
+      summary: Get a specific setting
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Setting'
+
+    patch:
+      tags:
+        - Settings
+      summary: Update a setting (Admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Setting updated
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    delete:
+      tags:
+        - Settings
+      summary: Delete a setting (Admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Setting deleted
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  # Users (Admin only for write operations)
+  /users:
+    get:
+      tags:
+        - Users
+      summary: List all users
+      description: |
+        **Filterable by:** name, email, role, is_active, created_at, updated_at
+        
+        **Sortable by:** id, name, email, role, is_active, created_at, updated_at
+        
+        **Searchable:** name, email
+      parameters:
+        - name: filter[role]
+          in: query
+          schema:
+            type: string
+        - name: filter[is_active]
+          in: query
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+
+    post:
+      tags:
+        - Users
+      summary: Create a new user (Admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/User'
+                - type: object
+                  properties:
+                    password:
+                      type: string
+                      format: password
+      responses:
+        '201':
+          description: User created
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /users/search:
+    post:
+      tags:
+        - Users
+      summary: Search users
+      responses:
+        '200':
+          description: Search results
+
+  /users/batch:
+    post:
+      tags:
+        - Users
+      summary: Create multiple users (Admin only)
+      responses:
+        '200':
+          description: Batch created
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    patch:
+      tags:
+        - Users
+      summary: Update multiple users (Admin only)
+      responses:
+        '200':
+          description: Batch updated
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    delete:
+      tags:
+        - Users
+      summary: Delete multiple users (Admin only)
+      responses:
+        '200':
+          description: Batch deleted
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get a specific user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+
+    patch:
+      tags:
+        - Users
+      summary: Update a user (Admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User updated
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    delete:
+      tags:
+        - Users
+      summary: Delete a user (Admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User deleted
+        '403':
+          $ref: '#/components/responses/Forbidden'

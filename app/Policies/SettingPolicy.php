@@ -8,23 +8,11 @@ use App\Models\User;
 class SettingPolicy
 {
     /**
-     * Perform pre-authorization checks.
-     */
-    public function before(User $user, string $ability): bool|null
-    {
-        if ($user->isAdmin()) {
-            return true;
-        }
-
-        return null;
-    }
-
-    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -32,7 +20,7 @@ class SettingPolicy
      */
     public function view(User $user, Setting $setting): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -40,7 +28,7 @@ class SettingPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
@@ -48,7 +36,7 @@ class SettingPolicy
      */
     public function update(User $user, Setting $setting): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
@@ -56,7 +44,7 @@ class SettingPolicy
      */
     public function delete(User $user, Setting $setting): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
@@ -64,7 +52,7 @@ class SettingPolicy
      */
     public function restore(User $user, Setting $setting): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
@@ -72,6 +60,6 @@ class SettingPolicy
      */
     public function forceDelete(User $user, Setting $setting): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 }

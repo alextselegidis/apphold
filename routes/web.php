@@ -7,6 +7,7 @@ use App\Http\Controllers\IncidentsController;
 use App\Http\Controllers\ObserversController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\PersonalTokenController;
 use App\Http\Controllers\RecoveryController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TagsController;
@@ -49,6 +50,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/account', [AccountController::class, 'index'])->name('account');
     Route::put('/account', [AccountController::class, 'update'])->name('account.update');
+
+    // PersonalTokenController
+
+    Route::post('/account/tokens', [PersonalTokenController::class, 'store'])->name('account.tokens.store');
+    Route::delete('/account/tokens/{token}', [PersonalTokenController::class, 'destroy'])->name('account.tokens.destroy');
 
     // AboutController
 

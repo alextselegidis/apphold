@@ -19,7 +19,9 @@ class AccountController extends Controller
 {
     public function index()
     {
-        return view('pages.account');
+        $tokens = auth()->user()->tokens;
+
+        return view('pages.account', compact('tokens'));
     }
 
     public function update(Request $request)

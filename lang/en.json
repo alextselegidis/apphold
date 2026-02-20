@@ -270,5 +270,16 @@
     "status_code": "Status Code",
     "add_comment": "Add Comment",
     "write_your_comment": "Write your comment",
-    "no_comments_yet": "No comments yet"
+    "no_comments_yet": "No comments yet",
+    "personal_access_tokens": "Personal Access Tokens",
+    "token_name": "Token Name",
+    "token_name_placeholder": "e.g., My API Token",
+    "create_token": "Create Token",
+    "token_created": "Token Created Successfully",
+    "token_deleted": "Token Deleted Successfully",
+    "token_copy_warning": "Make sure to copy your personal access token now. You won't be able to see it again!",
+    "confirm_delete_token": "Are you sure you want to delete this token?",
+    "last_used": "Last Used",
+    "never": "Never",
+    "no_tokens": "You haven't created any personal access tokens yet."
 }
