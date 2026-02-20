@@ -48,6 +48,22 @@
                     alextselegidis.com
                 </a>
             </div>
+
+            <hr class="my-5">
+
+            <div class="mb-4">
+                <h2 class="fs-4 mb-3">
+                    <i class="bi bi-star text-warning me-2"></i>
+                    {{ __('premium') }}
+                </h2>
+                <div class="text-secondary mb-4">
+                    {{ __('premium_description') }}
+                </div>
+                <a href="https://apphold.org/premium" class="btn btn-primary btn-lg w-100" target="_blank">
+                    <i class="bi bi-star me-2"></i>
+                    {{ __('go_premium') }}
+                </a>
+            </div>
         </div>
     </div>
 
