@@ -19,7 +19,7 @@ php artisan clear-compiled
 
 # Remove Various
 
-rm build.zip
+rm apphold-0.0.0.zip
 
 rm public/hot
 
@@ -27,7 +27,7 @@ find . -name ".DS_Store" -delete
 
 # Zip Files
 
-zip -r build.zip . \
+zip -r apphold-0.0.0.zip . \
     -x '.git/*' \
     -x '.idea/*' \
     -x '.run/*' \
@@ -44,4 +44,5 @@ zip -r build.zip . \
     -x 'docker-compose.yml' \
     -x 'postcss.config.js' \
     -x 'vite.config.js' \
+    -x 'SPECS.md' \
     -x '*.zip'
