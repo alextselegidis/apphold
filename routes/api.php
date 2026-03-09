@@ -21,7 +21,7 @@ use App\Http\Controllers\Api\V1\UserApiV1Controller;
 use Illuminate\Support\Facades\Route;
 use Orion\Facades\Orion;
 
-Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+Route::prefix('v1')->middleware('auth:sanctum')->name('api.v1.')->group(function () {
     // Me endpoints
     Route::get('me', [MeApiV1Controller::class, 'show']);
     Route::patch('me', [MeApiV1Controller::class, 'update']);
