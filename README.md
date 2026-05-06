@@ -73,6 +73,39 @@ You will need to perform the following steps to install the application on your 
 
 That's it! You can now use Apphold at your will.
 
+## Demo data
+
+A dedicated `DemoSeeder` is provided to populate a fresh installation with
+realistic data for a fictitious logistics company ("Northwind Logistics"),
+including users, projects, monitored observers, tags, incidents and incident
+comments.
+
+The seeder is intentionally **not** wired into `DatabaseSeeder.php`, so it
+will never run during regular `php artisan db:seed` or `migrate --seed`
+calls. Invoke it explicitly:
+
+```bash
+# Default invocation (against an already-migrated database)
+php artisan db:seed --class=DemoSeeder
+
+# Drop everything, re-run migrations, then seed the demo data in one shot
+php artisan migrate:fresh --seeder=DemoSeeder
+
+# Inside Docker
+docker compose exec php-fpm php artisan migrate:fresh --seeder=DemoSeeder
+
+# Force flag for non-interactive environments (e.g. production-like setups)
+php artisan migrate:fresh --seeder=DemoSeeder --force
+```
+
+All demo users share the password `12345678`. The admin account is
+`admin@example.org`.
+
+The seeder is idempotent for users, projects, tags and observers (re-running
+it will not create duplicates). Incidents and incident comments are
+event-style data and a fresh batch is appended on every run, so use
+`php artisan migrate:fresh` first if you want a clean slate.
+
 You will find the latest release at [apphold.org](https://apphold.org).
 You can also report problems on the [issues page](https://github.com/alextselegidis/apphold/issues)
 and help the development progress.
