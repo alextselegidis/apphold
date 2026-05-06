@@ -79,7 +79,7 @@
             </div>
             <!-- Change Password Section -->
             <h5 class="text-dark fw-bold mb-3">{{ __('password') }}</h5>
-            <div class="card shadow-sm border-0 rounded-3">
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
                 <div class="card-body p-4">
                     <form action="{{ route('account.update') }}" method="POST" id="password-form">
                         @csrf
