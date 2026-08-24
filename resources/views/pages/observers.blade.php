@@ -33,10 +33,10 @@
     <!-- Search -->
     <form action="{{ route('observers') }}" method="GET" class="mb-4">
         <div class="input-group">
-            <span class="input-group-text bg-light border-end-0">
+            <span class="input-group-text border-end-0">
                 <i class="bi bi-search text-muted"></i>
             </span>
-            <input type="text" id="q" name="q" class="form-control bg-light border-start-0"
+            <input type="text" id="q" name="q" class="form-control border-start-0"
                    value="{{ $q }}"
                    placeholder="{{ __('search') }}..." style="max-width: 300px;">
         </div>

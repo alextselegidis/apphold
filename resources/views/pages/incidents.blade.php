@@ -27,10 +27,10 @@
     <form action="{{ route('incidents') }}" method="GET" class="mb-4">
         <div class="d-flex flex-wrap gap-3">
             <div class="input-group" style="max-width: 300px;">
-                <span class="input-group-text bg-light border-end-0">
+                <span class="input-group-text border-end-0">
                     <i class="bi bi-search text-muted"></i>
                 </span>
-                <input type="text" id="q" name="q" class="form-control bg-light border-start-0"
+                <input type="text" id="q" name="q" class="form-control border-start-0"
                        value="{{ $q }}"
                        placeholder="{{ __('search') }}...">
             </div>

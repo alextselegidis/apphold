@@ -555,7 +555,7 @@ footer .border-top {
 }
 
 .input-group-text {
-    background-color: var(--ah-surface-alt);
+    background-color: var(--ah-surface);
     border-color: #dcd9e8;
     color: var(--ah-muted);
 }

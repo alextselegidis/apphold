@@ -57,7 +57,7 @@
                         <!-- Global Search -->
                         <form action="{{ route('dashboard') }}" method="GET" class="d-flex me-lg-3 my-2 my-lg-0">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-text bg-white border-end-0">
+                                <span class="input-group-text border-end-0">
                                     <i class="bi bi-search text-muted"></i>
                                 </span>
                                 <input type="text" name="q" class="form-control border-start-0"
