@@ -26,6 +26,7 @@
 - Allow pinch zooming again on mobile devices
 - Keep table rows on a single line on phones and show an edge shadow while a table can still be scrolled
 
+
 ## [1.0.0] - 2026-03-26
 
 ### Added
