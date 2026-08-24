@@ -8,7 +8,72 @@
  * @link        https://apphold.org
  * ---------------------------------------------------------------------------- */
 
-/* Global transition for smooth effects */
+/* ----------------------------------------------------------------------------
+ * Design tokens
+ *
+ * Every color in the interface comes from this list. The brand purple is used in
+ * two shades: a dark one for anything carrying white text (navigation, primary
+ * buttons, links) and a light one for tinted surfaces. All text and background
+ * combinations below are at least 4.5:1, most of them above 6:1.
+ * ---------------------------------------------------------------------------- */
+
+:root {
+    /* Brand */
+    --ah-brand: #6d46c9;
+    --ah-brand-dark: #5b32ad;
+    --ah-brand-darker: #4e2b96;
+    --ah-brand-light: #8560d8;
+    --ah-brand-tint: #efe9fc;
+    --ah-brand-tint-strong: #e0d4f8;
+    --ah-brand-text: #5b3bb5;
+
+    /* Neutrals, slightly warmed towards the brand purple */
+    --ah-ink: #232030;
+    --ah-ink-soft: #3b3748;
+    --ah-muted: #5c5870;
+    --ah-line: #e6e3ef;
+    --ah-line-soft: #f0eef6;
+    --ah-surface: #ffffff;
+    --ah-surface-alt: #faf9fd;
+    --ah-canvas: #f6f6fb;
+
+    /* Semantic tints, always paired with their own text color */
+    --ah-danger-tint: #fdecee;
+    --ah-danger-text: #a5202f;
+    --ah-success-tint: #e7f6f0;
+    --ah-success-text: #0f6b4f;
+    --ah-warning-tint: #fdf1de;
+    --ah-warning-text: #8a5300;
+    --ah-neutral-tint: #eeedf3;
+
+    /* Elevation */
+    --ah-shadow-sm: 0 1px 2px rgba(35, 32, 48, 0.06);
+    --ah-shadow: 0 6px 18px -6px rgba(35, 32, 48, 0.14);
+    --ah-shadow-lg: 0 16px 40px -12px rgba(35, 32, 48, 0.22);
+
+    /* Bootstrap overrides */
+    --bs-primary: #6d46c9;
+    --bs-primary-rgb: 109, 70, 201;
+    --bs-link-color: #6538c4;
+    --bs-link-color-rgb: 101, 56, 196;
+    --bs-link-hover-color: #4e2b96;
+    --bs-link-hover-color-rgb: 78, 43, 150;
+    --bs-body-color: #3b3748;
+    --bs-body-bg: #f6f6fb;
+    --bs-emphasis-color: #232030;
+    --bs-secondary-color: #5c5870;
+    --bs-border-color: #e6e3ef;
+    --bs-border-radius-sm: 0.5rem;
+    --bs-border-radius: 0.75rem;
+    --bs-border-radius-lg: 1rem;
+    --bs-border-radius-xl: 1.25rem;
+    --bs-focus-ring-color: rgba(109, 70, 201, 0.2);
+}
+
+/* ----------------------------------------------------------------------------
+ * Base
+ * ---------------------------------------------------------------------------- */
+
 *,
 *::before,
 *::after {
@@ -19,94 +84,606 @@
                 opacity 0.15s ease-in-out;
 }
 
-/* Override Bootstrap primary color */
-:root {
-    --bs-primary: #976fd5;
-    --bs-primary-rgb: 151, 111, 213;
-    --bs-link-color: #8560c2;
-    --bs-link-color-rgb: 133, 96, 194;
-    --bs-link-hover-color: #7352ae;
-    --bs-link-hover-color-rgb: 115, 82, 174;
-    --bs-secondary-color: #6c757d;
-    --bs-body-color: #495057;
+body {
+    color: var(--ah-ink-soft);
+    background-color: var(--ah-canvas);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
 }
 
-/* Link colors - darker than labels */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.display-6 {
+    color: var(--ah-ink);
+    font-weight: 600;
+    letter-spacing: -0.011em;
+}
+
 a {
     color: var(--bs-link-color);
+    text-underline-offset: 0.2em;
 }
 
 a:hover {
     color: var(--bs-link-hover-color);
 }
 
-/* Labels use a different color */
-.form-label {
-    color: #495057 !important;
+hr {
+    border-color: var(--ah-line);
+    opacity: 1;
+}
+
+code {
+    color: var(--ah-brand-text);
+    background-color: var(--ah-brand-tint);
+    border-radius: 0.375rem;
+    padding: 0.15rem 0.4rem;
+}
+
+.text-muted,
+.text-body-secondary,
+.text-secondary {
+    color: var(--ah-muted) !important;
 }
 
 .text-dark {
-    color: #343a40 !important;
+    color: var(--ah-ink) !important;
+}
+
+.bg-light {
+    background-color: var(--ah-canvas) !important;
+}
+
+.bg-body-secondary,
+.bg-body-tertiary {
+    background-color: var(--ah-surface-alt) !important;
+}
+
+.main-layout {
+    background-color: var(--ah-canvas) !important;
+}
+
+/* One consistent focus ring instead of the Bootstrap blue */
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus,
+.btn:focus-visible,
+.btn-check:focus-visible + .btn,
+.page-link:focus {
+    border-color: var(--ah-brand-light);
+    box-shadow: 0 0 0 0.2rem rgba(109, 70, 201, 0.2);
+    outline: none;
+}
+
+/* Loading bar in the brand color instead of the Pace default blue */
+.pace .pace-progress {
+    background: var(--ah-brand-light);
+}
+
+/* ----------------------------------------------------------------------------
+ * Navigation and page chrome
+ * ---------------------------------------------------------------------------- */
+
+.app-header {
+    background: linear-gradient(100deg, #5b32ad 0%, #6d46c9 55%, #7b52d6 100%);
+}
+
+.app-header .navbar-brand strong {
+    letter-spacing: 0.02em;
+}
+
+.app-header .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.86);
+    font-weight: 500;
+    border-radius: 0.5rem;
+}
+
+.app-header .navbar-nav .nav-link:hover,
+.app-header .navbar-nav .nav-link:focus {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.app-header .navbar-nav .nav-link.fw-bold {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.16);
+}
+
+.app-header .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.app-header .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+/* Sub header holding the breadcrumb and the page actions */
+.app-subheader {
+    background-color: var(--ah-surface);
+    border-bottom: 1px solid var(--ah-line);
+}
+
+.app-subheader .navbar {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.app-subheader .navbar-nav .nav-link {
+    color: var(--ah-brand-text);
+    font-weight: 600;
+    border-radius: 0.625rem;
+    padding: 0.45rem 0.85rem;
+}
+
+.app-subheader .navbar-nav .nav-link:hover {
+    background-color: var(--ah-brand-tint);
+    color: var(--ah-brand-darker);
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+.breadcrumb a {
+    color: var(--ah-muted);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    color: var(--ah-brand-text);
+}
+
+.breadcrumb-item.active,
+.breadcrumb .active {
+    color: var(--ah-ink);
+    font-weight: 600;
+}
+
+footer {
+    color: var(--ah-muted);
+}
+
+footer .border-top {
+    border-color: var(--ah-line) !important;
+}
+
+/* ----------------------------------------------------------------------------
+ * Cards
+ * ---------------------------------------------------------------------------- */
+
+.card {
+    background-color: var(--ah-surface);
+    border: 1px solid var(--ah-line);
+    border-radius: var(--bs-border-radius-lg);
+    box-shadow: var(--ah-shadow-sm);
+}
+
+.card .card-header {
+    background-color: transparent;
+    border-bottom-color: var(--ah-line);
+    font-weight: 600;
+    color: var(--ah-ink);
+}
+
+.card .card-footer {
+    background-color: var(--ah-surface-alt) !important;
+    border-top-color: var(--ah-line) !important;
+}
+
+.card .card-title {
+    color: var(--ah-ink);
+    font-weight: 600;
+}
+
+.card .card-url {
+    color: var(--ah-brand-text);
+}
+
+/* Preview strip on the observer cards */
+.card .card-img-top {
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(135deg, #f7f6fb 0%, #efedf6 100%) !important;
+}
+
+.card .card-img-top.img-cover {
+    object-fit: cover;
+}
+
+.card .card-img-top.img-contain {
+    object-fit: contain;
+}
+
+/* Observer cards get a brand colored base line and lift on hover */
+.observer-card {
+    border-bottom: 3px solid var(--ah-brand-tint-strong);
+}
+
+.card-hover-move {
+    transition: transform 0.2s ease-in-out,
+                background-color 0.15s ease-in-out,
+                border-color 0.15s ease-in-out,
+                box-shadow 0.15s ease-in-out;
+}
+
+.card-hover-move:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--ah-shadow);
+    border-color: var(--ah-brand-tint-strong);
+}
+
+/* ----------------------------------------------------------------------------
+ * Tables
+ * ---------------------------------------------------------------------------- */
+
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-striped-bg: #fbfafd;
+    --bs-table-hover-bg: rgba(109, 70, 201, 0.05);
+    --bs-table-border-color: var(--ah-line-soft);
+    color: var(--ah-ink-soft);
+    margin-bottom: 0;
+}
+
+.table > thead th {
+    background-color: var(--ah-surface-alt);
+    color: var(--ah-ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--ah-line);
+    vertical-align: middle;
+}
+
+.table > thead th a {
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0;
+}
+
+.table > thead th a:hover {
+    color: var(--ah-brand-text);
+}
+
+.table > thead th a::after {
+    content: '\F282';
+    font-family: 'bootstrap-icons';
+    margin-left: 0.4rem;
+    opacity: 0;
+    font-size: 0.75rem;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.table > thead th a:hover::after {
+    opacity: 0.6;
+}
+
+.table > tbody td {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.table > tbody tr:last-child > * {
+    border-bottom-width: 0;
+}
+
+/* Round the table off inside its card */
+.card > .card-body.p-0 > .table-responsive {
+    border-radius: inherit;
+}
+
+.card > .card-body.p-0 > .table-responsive > .table > thead tr:first-child th:first-child {
+    border-top-left-radius: inherit;
+}
+
+.card > .card-body.p-0 > .table-responsive > .table > thead tr:first-child th:last-child {
+    border-top-right-radius: inherit;
+}
+
+/* ----------------------------------------------------------------------------
+ * Badges
+ *
+ * Solid colored badges with white text fail contrast at this size, so every
+ * badge is a tint with matching dark text.
+ * ---------------------------------------------------------------------------- */
+
+.badge {
+    border-radius: 50rem;
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.01em;
+    padding: 0.4em 0.75em;
+}
+
+.badge.bg-primary {
+    background-color: var(--ah-brand-tint) !important;
+    color: var(--ah-brand-text) !important;
+}
+
+.badge.bg-danger,
+.badge.bg-danger-subtle {
+    background-color: var(--ah-danger-tint) !important;
+    color: var(--ah-danger-text) !important;
+}
+
+.badge.bg-success,
+.badge.bg-success-subtle {
+    background-color: var(--ah-success-tint) !important;
+    color: var(--ah-success-text) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--ah-warning-tint) !important;
+    color: var(--ah-warning-text) !important;
+}
+
+.badge.bg-secondary,
+.badge.bg-dark,
+.badge.bg-light {
+    background-color: var(--ah-neutral-tint) !important;
+    color: var(--ah-ink-soft) !important;
+}
+
+/* ----------------------------------------------------------------------------
+ * Buttons
+ * ---------------------------------------------------------------------------- */
+
+.btn {
+    font-weight: 600;
+    padding: 0.5rem 1.1rem;
+    border-radius: 0.625rem;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8125rem;
+    border-radius: 0.5rem;
+}
+
+.btn-lg {
+    padding: 0.7rem 1.4rem;
+    font-size: 1rem;
+    border-radius: 0.75rem;
 }
 
 .btn-primary {
-    --bs-btn-bg: #976fd5;
-    --bs-btn-border-color: #976fd5;
-    --bs-btn-hover-bg: #8560c2;
-    --bs-btn-hover-border-color: #7352ae;
-    --bs-btn-active-bg: #7352ae;
-    --bs-btn-active-border-color: #61459a;
-    --bs-btn-disabled-bg: #976fd5;
-    --bs-btn-disabled-border-color: #976fd5;
+    --bs-btn-bg: var(--ah-brand);
+    --bs-btn-border-color: var(--ah-brand);
+    --bs-btn-hover-bg: var(--ah-brand-dark);
+    --bs-btn-hover-border-color: var(--ah-brand-dark);
+    --bs-btn-active-bg: var(--ah-brand-darker);
+    --bs-btn-active-border-color: var(--ah-brand-darker);
+    --bs-btn-disabled-bg: var(--ah-brand);
+    --bs-btn-disabled-border-color: var(--ah-brand);
+    box-shadow: 0 1px 2px rgba(78, 43, 150, 0.25);
 }
 
 .btn-outline-primary {
-    --bs-btn-color: #976fd5;
-    --bs-btn-border-color: #976fd5;
-    --bs-btn-hover-bg: #976fd5;
-    --bs-btn-hover-border-color: #976fd5;
-    --bs-btn-active-bg: #8560c2;
-    --bs-btn-active-border-color: #8560c2;
+    --bs-btn-color: var(--ah-brand-text);
+    --bs-btn-border-color: var(--ah-brand-tint-strong);
+    --bs-btn-hover-bg: var(--ah-brand);
+    --bs-btn-hover-border-color: var(--ah-brand);
+    --bs-btn-active-bg: var(--ah-brand-dark);
+    --bs-btn-active-border-color: var(--ah-brand-dark);
 }
 
-/* Dashboard card image gradient background */
-.card .card-img-top {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+.btn-dark {
+    --bs-btn-bg: #2f2b3c;
+    --bs-btn-border-color: #2f2b3c;
+    --bs-btn-hover-bg: #232030;
+    --bs-btn-hover-border-color: #232030;
+    --bs-btn-active-bg: #1a1824;
+    --bs-btn-active-border-color: #1a1824;
+    --bs-btn-disabled-bg: #2f2b3c;
+    --bs-btn-disabled-border-color: #2f2b3c;
 }
 
-/* Improved card footer styling - subtle warm gray */
-.card .card-footer {
-    background-color: #f5f5f5 !important;
-    border-top-color: #e8e8e8 !important;
+.btn-secondary,
+.btn-light {
+    --bs-btn-bg: var(--ah-neutral-tint);
+    --bs-btn-color: var(--ah-ink-soft);
+    --bs-btn-border-color: var(--ah-line);
+    --bs-btn-hover-bg: #e5e3ec;
+    --bs-btn-hover-color: var(--ah-ink);
+    --bs-btn-hover-border-color: #dcd9e8;
+    --bs-btn-active-bg: #dcd9e8;
+    --bs-btn-active-color: var(--ah-ink);
+    --bs-btn-active-border-color: #d2cee2;
 }
 
-/* Improved background colors - warmer and softer */
-.bg-light {
-    background-color: #fafafa !important;
+.btn-outline-secondary {
+    --bs-btn-color: var(--ah-ink-soft);
+    --bs-btn-border-color: var(--ah-line);
+    --bs-btn-hover-bg: var(--ah-neutral-tint);
+    --bs-btn-hover-color: var(--ah-ink);
+    --bs-btn-hover-border-color: #dcd9e8;
+    --bs-btn-active-bg: #dcd9e8;
+    --bs-btn-active-color: var(--ah-ink);
 }
 
-.bg-body-secondary {
-    background-color: #f5f5f5 !important;
+.btn-outline-danger {
+    --bs-btn-color: var(--ah-danger-text);
+    --bs-btn-border-color: #f3ccd1;
+    --bs-btn-hover-bg: #b4242f;
+    --bs-btn-hover-border-color: #b4242f;
 }
 
-.bg-body-tertiary {
-    background-color: #f8f8f8 !important;
+.btn-link {
+    color: var(--bs-link-color);
+    font-weight: 600;
+    text-decoration: none;
 }
 
-/* Main layout background - softer */
-.main-layout {
-    background-color: #f5f6f8 !important;
+.btn-link:hover {
+    color: var(--bs-link-hover-color);
+    text-decoration: underline;
 }
 
-.text-muted {
-    color: #6c757d !important;
+.btn-equal-width {
+    min-width: 120px;
 }
 
-.text-body-secondary {
-    color: #6c757d !important;
+/* ----------------------------------------------------------------------------
+ * Forms
+ * ---------------------------------------------------------------------------- */
+
+.form-label {
+    color: var(--ah-ink-soft) !important;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    margin-bottom: 0.35rem;
 }
 
-/* Responsive width utilities for lg breakpoint */
+.form-control,
+.form-select {
+    background-color: var(--ah-surface);
+    border-color: #dcd9e8;
+    border-radius: 0.625rem;
+    padding: 0.55rem 0.85rem;
+    color: var(--ah-ink);
+}
+
+.form-control::placeholder {
+    color: #8d8899;
+}
+
+.input-group-text {
+    background-color: var(--ah-surface-alt);
+    border-color: #dcd9e8;
+    color: var(--ah-muted);
+}
+
+.form-check-input {
+    border-color: #cfcada;
+}
+
+.form-check-input:checked {
+    background-color: var(--ah-brand);
+    border-color: var(--ah-brand);
+}
+
+.form-switch .form-check-input {
+    width: 2.25rem;
+    height: 1.25rem;
+}
+
+/* ----------------------------------------------------------------------------
+ * Dropdowns, lists, toasts, modals
+ * ---------------------------------------------------------------------------- */
+
+.dropdown-menu {
+    border-color: var(--ah-line);
+    border-radius: 0.75rem;
+    box-shadow: var(--ah-shadow-lg);
+    padding: 0.35rem;
+}
+
+.dropdown-item {
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    color: var(--ah-ink-soft);
+    font-weight: 500;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--ah-brand-tint);
+    color: var(--ah-brand-darker);
+}
+
+.dropdown-item.active {
+    background-color: var(--ah-brand);
+    color: #ffffff;
+}
+
+.dropdown-divider {
+    border-color: var(--ah-line);
+}
+
+.list-group-item {
+    border-color: var(--ah-line);
+    color: var(--ah-ink-soft);
+}
+
+.list-group-item-action:hover {
+    background-color: var(--ah-brand-tint);
+    color: var(--ah-brand-darker);
+}
+
+.list-group-item:first-child {
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
+.list-group-item:last-child {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
+.toast {
+    border-radius: 0.75rem;
+    box-shadow: var(--ah-shadow-lg);
+}
+
+.modal-content {
+    border: 1px solid var(--ah-line);
+    border-radius: var(--bs-border-radius-lg);
+    box-shadow: var(--ah-shadow-lg);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--ah-line);
+}
+
+.alert {
+    border-radius: 0.75rem;
+    border-color: transparent;
+}
+
+.alert-success {
+    background-color: var(--ah-success-tint);
+    color: var(--ah-success-text);
+}
+
+.alert-danger {
+    background-color: var(--ah-danger-tint);
+    color: var(--ah-danger-text);
+}
+
+.page-link {
+    color: var(--ah-ink-soft);
+    border-color: var(--ah-line);
+}
+
+.page-item.active .page-link {
+    background-color: var(--ah-brand);
+    border-color: var(--ah-brand);
+}
+
+.tooltip-inner {
+    background-color: var(--ah-ink);
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+}
+
+/* ----------------------------------------------------------------------------
+ * Responsive helpers used in the views
+ * ---------------------------------------------------------------------------- */
+
+@media (min-width: 576px) {
+    .w-sm-auto {
+        width: auto !important;
+    }
+}
+
 @media (min-width: 992px) {
     .w-lg-auto {
         width: auto !important;
@@ -121,103 +698,87 @@ a:hover {
     }
 
     .shadow-lg-sm {
-        box-shadow: var(--bs-box-shadow-sm) !important;
+        box-shadow: var(--ah-shadow) !important;
     }
 
     .min-vh-lg-auto {
         min-height: auto !important;
     }
-}
 
-/* Card hover effect */
-.card-hover-move {
-    transition: transform 0.2s ease-in-out,
-                background-color 0.15s ease-in-out,
-                border-color 0.15s ease-in-out,
-                box-shadow 0.15s ease-in-out;
-}
-
-.card-hover-move:hover {
-    transform: translateY(-2px);
-}
-
-/* Link image styling - stretch for og_image, contain for favicon */
-.card .card-img-top.img-cover {
-    object-fit: cover;
-}
-
-.card .card-img-top.img-contain {
-    object-fit: contain;
-}
-
-/* Equal width buttons */
-.btn-equal-width {
-    min-width: 120px;
-}
-
-/* Better button styling */
-.btn {
-    font-weight: 500;
-    padding: 0.5rem 1.25rem;
-    border-radius: 0.375rem;
-}
-
-@media (min-width: 992px) {
-    .navbar-nav .nav-item .nav-link.nav-menu-item {
-        min-width: 120px;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        transition: background-color 0.2s ease;
+    .app-header .navbar {
+        padding-top: 0.35rem;
+        padding-bottom: 0.35rem;
     }
 
-    .navbar-nav .nav-item .nav-link.nav-menu-item:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+    .app-header .navbar-brand {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
     }
 
-    .navbar-nav.me-auto .nav-item .nav-link:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .navbar {
-        padding-top: 0;
-        padding-bottom: 0;
-    }
-
-    .navbar-brand {
-        padding-top: 0.75rem;
-        padding-bottom: 0.75rem;
+    .app-header .navbar-nav .nav-link {
+        padding: 0.6rem 1rem;
+        margin: 0 0.15rem;
     }
 }
 
-/* Table header sorting hover effect */
-.table-dark th {
-    vertical-align: middle;
-}
+/* ----------------------------------------------------------------------------
+ * Mobile
+ * ---------------------------------------------------------------------------- */
 
-.table-dark th a {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0;
-}
+@media (max-width: 991.98px) {
+    /* Comfortable touch targets */
+    .btn {
+        min-height: 2.6rem;
+    }
 
-.table-dark th a:hover {
-    opacity: 0.8;
-}
+    .btn-sm {
+        min-height: 2.2rem;
+    }
 
-.table-dark th a::after {
-    content: '\F282';
-    font-family: 'bootstrap-icons';
-    margin-left: 0.5rem;
-    opacity: 0;
-    font-size: 0.75rem;
-    transition: opacity 0.15s ease-in-out;
-}
+    .app-header .navbar-nav .nav-link,
+    .dropdown-item {
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+    }
 
-.table-dark th a:hover::after {
-    opacity: 0.6;
+    /* Tables keep readable columns and scroll on their own. The edge shadow only
+       shows up while there is more content in that direction. */
+    .table-responsive .table {
+        min-width: 640px;
+    }
+
+    /* One line per cell, the table scrolls instead of growing tall */
+    .table > thead th,
+    .table > tbody td {
+        white-space: nowrap;
+    }
+
+    .table-responsive {
+        background-image:
+            linear-gradient(to right, var(--ah-surface), rgba(255, 255, 255, 0)),
+            linear-gradient(to left, var(--ah-surface), rgba(255, 255, 255, 0)),
+            radial-gradient(farthest-side at 0 50%, rgba(35, 32, 48, 0.14), rgba(35, 32, 48, 0)),
+            radial-gradient(farthest-side at 100% 50%, rgba(35, 32, 48, 0.14), rgba(35, 32, 48, 0));
+        background-position: 0 0, 100% 0, 0 0, 100% 0;
+        background-repeat: no-repeat;
+        background-size: 32px 100%, 32px 100%, 12px 100%, 12px 100%;
+        background-attachment: local, local, scroll, scroll;
+    }
+
+    /* Shorter preview strip, the cards are full width here */
+    .card .card-img-top {
+        height: 110px;
+    }
+
+    .app-subheader .navbar-nav .nav-link {
+        white-space: nowrap;
+    }
+
+    h1, .h1, .display-6 {
+        font-size: 1.6rem;
+    }
+
+    h2, .h2 {
+        font-size: 1.35rem;
+    }
 }

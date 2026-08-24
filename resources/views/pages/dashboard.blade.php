@@ -98,23 +98,22 @@
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 @foreach($observers as $observer)
                     <div class="col">
-                        <div class="card h-100 shadow-sm card-hover-move d-flex flex-column {{ !$observer->is_active ? 'bg-opacity-10 bg-warning' : '' }}"
-                             style="border-bottom: 5px solid #dee2e6;"
+                        <div class="card h-100 observer-card card-hover-move d-flex flex-column {{ !$observer->is_active ? 'bg-opacity-10 bg-warning' : '' }}"
                              data-bs-toggle="tooltip"
                              data-bs-placement="top"
                              data-bs-title="{{ $observer->title ?: 'No Title' }}">
                             <a href="{{ $observer->url }}" target="_blank" class="text-decoration-none">
                                 @if ($observer->og_image)
                                     <img src="data:image/x-icon;base64,{{ $observer->og_image }}"
-                                         class="card-img-top"
-                                         alt="Preview" style="width: 100%; height: 150px; object-fit: cover;">
+                                         class="card-img-top img-cover"
+                                         alt="Preview">
                                 @elseif ($observer->favicon)
                                     <img src="data:image/x-icon;base64,{{ $observer->favicon }}"
-                                         class="card-img-top p-4"
-                                         alt="Favicon" style="width: 100%; height: 150px; object-fit: contain;">
+                                         class="card-img-top img-contain p-4"
+                                         alt="Favicon">
                                 @else
-                                    <img src="{{ url('images/logo.png') }}" class="card-img-top p-4"
-                                         alt="Favicon" style="width: 100%; height: 150px; object-fit: contain;">
+                                    <img src="{{ url('images/logo.png') }}" class="card-img-top img-contain p-4"
+                                         alt="Favicon">
                                 @endif
                             </a>
                             <a href="{{ $observer->url }}" target="_blank" class="text-decoration-none flex-grow-1 d-flex flex-column">
@@ -122,7 +121,7 @@
                                     <h6 class="card-title text-body">
                                         {{ $observer->title ? Str::limit($observer->title, 50) : 'No Title' }}
                                     </h6>
-                                    <p class="card-text text-truncate small" style="color: #0d6efd;">
+                                    <p class="card-text card-url text-truncate small">
                                         {{ $observer->formatted_url }}
                                     </p>
                                     <div class="mt-auto" style="min-height: 24px;">

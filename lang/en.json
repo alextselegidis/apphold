@@ -251,7 +251,6 @@
     "password_confirmation": "Password Confirmation",
     "seconds": "Seconds",
     "load_more": "Load More",
-    "incidents": "Incidents",
     "incident": "Incident",
     "date": "Date",
     "type": "Type",
@@ -261,7 +260,6 @@
     "all_statuses": "All Statuses",
     "site_down": "Site Down",
     "connection_error": "Connection Error",
-    "new": "New",
     "ignored": "Ignored",
     "fixing": "Fixing",
     "fixed": "Fixed",
@@ -281,5 +279,9 @@
     "confirm_delete_token": "Are you sure you want to delete this token?",
     "last_used": "Last Used",
     "never": "Never",
-    "no_tokens": "You haven't created any personal access tokens yet."
+    "no_tokens": "You haven't created any personal access tokens yet.",
+    "blog": "Blog",
+    "latest_blog_posts": "Latest Blog Posts",
+    "read_more": "Read More",
+    "visit_the_blog": "Visit The Blog"
 }

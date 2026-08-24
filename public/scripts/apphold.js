@@ -25,6 +25,16 @@ document.getElementById('create-modal')?.addEventListener('shown.bs.modal', (eve
     return event.target.querySelector('input:not([type="hidden"])').focus();
 });
 
+// Let table row dropdowns escape the horizontally scrollable table container
+
+document.querySelectorAll('.table-responsive [data-bs-toggle="dropdown"]').forEach(function (toggle) {
+    new bootstrap.Dropdown(toggle, {
+        popperConfig: {
+            strategy: 'fixed',
+        },
+    });
+});
+
 // Close other table row dropdowns when one opens
 
 document.addEventListener('show.bs.dropdown', function (event) {
@@ -47,3 +57,9 @@ document.addEventListener('show.bs.dropdown', function (event) {
         });
     }
 });
+
+// Register the service worker that makes the app installable
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+}

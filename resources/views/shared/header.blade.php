@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------------------- */
 --}}
 
-<div class="bg-primary">
+<div class="app-header">
     <div class="container">
         <div class="row">
             <div class="col">

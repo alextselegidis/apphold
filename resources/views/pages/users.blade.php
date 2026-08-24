@@ -57,12 +57,12 @@
             <div class="card border-0 shadow-sm rounded-3">
                 <div class="card-body p-0">
                     <!-- Table -->
-                    <div class="table-responsive" style="overflow: visible;">
+                    <div class="table-responsive">
                         <table class="table table-striped table-hover align-middle mb-0">
-                            <thead class="table-dark">
+                            <thead>
                                 <tr>
                                     <th class="border-0 ps-4">
-                                        <a href="{{ route('setup.users', ['sort' => 'name', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none text-white">
+                                        <a href="{{ route('setup.users', ['sort' => 'name', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
                                             {{ __('name') }}
                                             @if(request('sort') === 'name')
                                                 <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
@@ -70,7 +70,7 @@
                                         </a>
                                     </th>
                                     <th class="border-0">
-                                        <a href="{{ route('setup.users', ['sort' => 'email', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none text-white">
+                                        <a href="{{ route('setup.users', ['sort' => 'email', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
                                             {{ __('email') }}
                                             @if(request('sort') === 'email')
                                                 <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
@@ -78,7 +78,7 @@
                                         </a>
                                     </th>
                                     <th class="border-0">
-                                        <a href="{{ route('setup.users', ['sort' => 'role', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none text-white">
+                                        <a href="{{ route('setup.users', ['sort' => 'role', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
                                             {{ __('role') }}
                                             @if(request('sort') === 'role')
                                                 <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
@@ -86,7 +86,7 @@
                                         </a>
                                     </th>
                                     <th class="border-0">
-                                        <a href="{{ route('setup.users', ['sort' => 'is_active', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none text-white">
+                                        <a href="{{ route('setup.users', ['sort' => 'is_active', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
                                             {{ __('active') }}
                                             @if(request('sort') === 'is_active')
                                                 <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
@@ -119,7 +119,7 @@
                                         </td>
                                         <td class="border-0 pe-4 text-end">
                                             <div class="dropdown" onclick="event.stopPropagation();">
-                                                <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                     {{ __('actions') }}
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">

@@ -13,26 +13,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-    <base href="{{url('')}}/">
-
-    <title>@yield('pageTitle') | Apphold</title>
-    <meta name="description" content="Apphold is a software telemetry application designed to help users easily monitor their applications.">
-    <meta name="theme-color" content="#e3434c">
-
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-
-    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="vendor/bootstrap-icons/bootstrap-icons.min.css">
-
-    <link rel="stylesheet" href="vendor/pace-js/pace-theme-default.min.css">
-    <link rel="stylesheet" href="vendor/pace-js/pace-theme-flat-top.tmpl.css">
-
-    <link rel="stylesheet" href="styles/apphold.css?{{config('app.version')}}">
-
-    @yield('styles')
+    @include('shared.head')
 </head>
 <body class="main-layout d-flex flex-column min-vh-100 bg-light">
 
@@ -40,7 +21,7 @@
     @include('shared.header')
     <!-- Page Heading -->
     @hasSection('pageTitle')
-        <header class="bg-body-secondary mb-3">
+        <header class="app-subheader mb-4">
             <div class="container">
                 <div class="row">
                     <nav class="navbar navbar-expand-lg">
@@ -51,15 +32,9 @@
                                 @endif
                             </div>
                             @hasSection('navActions')
-                                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#page-navbar-actions">
-                                    <span class="navbar-toggler-icon"></span>
-                                </button>
-                                <div class="collapse navbar-collapse" id="page-navbar-actions">
-                                    <nav class="navbar-nav ms-lg-auto mb-2 mb-lg-0">
-                                        @yield('navActions')
-                                    </nav>
-                                </div>
+                                <nav class="navbar-nav flex-row ms-auto">
+                                    @yield('navActions')
+                                </nav>
                             @endif
                         </div>
                     </nav>

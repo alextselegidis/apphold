@@ -146,7 +146,7 @@
                     <form action="{{ route('account.tokens.store') }}" method="POST" class="mb-4">
                         @csrf
                         <div class="row g-2 align-items-end">
-                            <div class="col">
+                            <div class="col-12 col-sm">
                                 <label for="token_name" class="form-label text-dark fw-medium">
                                     {{ __('token_name') }}
                                 </label>
@@ -162,8 +162,8 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-auto">
-                                <button type="submit" class="btn btn-dark">
+                            <div class="col-12 col-sm-auto">
+                                <button type="submit" class="btn btn-dark w-100 w-sm-auto">
                                     <i class="bi bi-plus-lg me-1"></i>
                                     {{ __('create_token') }}
                                 </button>
@@ -173,6 +173,7 @@
 
                     <!-- Token List -->
                     @if($tokens->count() > 0)
+                        <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
@@ -201,6 +202,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        </div>
                     @else
                         <p class="text-muted mb-0">{{ __('no_tokens') }}</p>
                     @endif

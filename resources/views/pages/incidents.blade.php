@@ -60,12 +60,12 @@
     <div class="card border-0 shadow-sm rounded-3">
         <div class="card-body p-0">
             <!-- Table -->
-            <div class="table-responsive" style="overflow: visible;">
+            <div class="table-responsive">
                 <table class="table table-striped table-hover align-middle mb-0">
-                    <thead class="table-dark">
+                    <thead>
                         <tr>
                             <th class="border-0 ps-4">
-                                <a href="{{ route('incidents', ['sort' => 'created_at', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc', 'type' => $type, 'status' => $status, 'q' => $q]) }}" class="text-decoration-none text-white">
+                                <a href="{{ route('incidents', ['sort' => 'created_at', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc', 'type' => $type, 'status' => $status, 'q' => $q]) }}" class="text-decoration-none">
                                     {{ __('date') }}
                                     @if(request('sort', 'created_at') === 'created_at')
                                         <i class="bi bi-chevron-{{ request('direction', 'desc') === 'asc' ? 'up' : 'down' }} ms-1"></i>
@@ -73,7 +73,7 @@
                                 </a>
                             </th>
                             <th class="border-0">
-                                <a href="{{ route('incidents', ['sort' => 'type', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc', 'type' => $type, 'status' => $status, 'q' => $q]) }}" class="text-decoration-none text-white">
+                                <a href="{{ route('incidents', ['sort' => 'type', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc', 'type' => $type, 'status' => $status, 'q' => $q]) }}" class="text-decoration-none">
                                     {{ __('type') }}
                                     @if(request('sort') === 'type')
                                         <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
@@ -81,15 +81,15 @@
                                 </a>
                             </th>
                             <th class="border-0">
-                                <a href="{{ route('incidents', ['sort' => 'status', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc', 'type' => $type, 'status' => $status, 'q' => $q]) }}" class="text-decoration-none text-white">
+                                <a href="{{ route('incidents', ['sort' => 'status', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc', 'type' => $type, 'status' => $status, 'q' => $q]) }}" class="text-decoration-none">
                                     {{ __('status') }}
                                     @if(request('sort') === 'status')
                                         <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
                                     @endif
                                 </a>
                             </th>
-                            <th class="border-0 text-white">{{ __('observer') }}</th>
-                            <th class="border-0 text-white">{{ __('message') }}</th>
+                            <th class="border-0">{{ __('observer') }}</th>
+                            <th class="border-0">{{ __('message') }}</th>
                             <th class="border-0 pe-4 text-end" style="width: 100px;"></th>
                         </tr>
                     </thead>
@@ -127,7 +127,7 @@
                                 </td>
                                 <td class="border-0 pe-4 text-end">
                                     <div class="dropdown" onclick="event.stopPropagation();">
-                                        <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                             {{ __('actions') }}
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">

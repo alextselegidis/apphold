@@ -52,3 +52,17 @@ if (!function_exists('setting')) {
         return $setting->value ?? $default;
     }
 }
+
+if (!function_exists('app_instance_id')) {
+    /**
+     * Short hash that is unique per Apphold installation.
+     *
+     * Used to suffix cookie names so that two installations sharing a domain cannot
+     * overwrite each other's session or "remember me" cookies. The app key is part of
+     * the hash because APP_URL is not always filled in, while the key always is.
+     */
+    function app_instance_id(): string
+    {
+        return substr(sha1(env('APP_URL', '') . env('APP_KEY', '')), 0, 8);
+    }
+}

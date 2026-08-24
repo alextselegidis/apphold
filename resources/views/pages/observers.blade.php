@@ -44,12 +44,12 @@
     <div class="card border-0 shadow-sm rounded-3">
         <div class="card-body p-0">
             <!-- Table -->
-            <div class="table-responsive" style="overflow: visible;">
+            <div class="table-responsive">
                 <table class="table table-striped table-hover align-middle mb-0">
-                    <thead class="table-dark">
+                    <thead>
                         <tr>
                             <th class="border-0 ps-4">
-                                <a href="{{ route('observers', ['sort' => 'title', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none text-white">
+                                <a href="{{ route('observers', ['sort' => 'title', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
                                     {{ __('title') }}
                                     @if(request('sort') === 'title')
                                         <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
@@ -57,14 +57,14 @@
                                 </a>
                             </th>
                             <th class="border-0">
-                                <a href="{{ route('observers', ['sort' => 'url', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none text-white">
+                                <a href="{{ route('observers', ['sort' => 'url', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
                                     {{ __('url') }}
                                     @if(request('sort') === 'url')
                                         <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
                                     @endif
                                 </a>
                             </th>
-                            <th class="border-0 text-white">{{ __('tags') }}</th>
+                            <th class="border-0">{{ __('tags') }}</th>
                             <th class="border-0 pe-4 text-end" style="width: 100px;"></th>
                         </tr>
                     </thead>
@@ -83,10 +83,10 @@
                                 <td class="border-0">
                                     @if($observer->tags->count())
                                         @foreach($observer->tags->take(3) as $tag)
-                                            <span class="badge bg-success">{{ $tag->name }}</span>
+                                            <span class="badge bg-dark">{{ $tag->name }}</span>
                                         @endforeach
                                         @if($observer->tags->count() > 3)
-                                            <span class="badge bg-light text-muted">+{{ $observer->tags->count() - 3 }}</span>
+                                            <span class="badge bg-light">+{{ $observer->tags->count() - 3 }}</span>
                                         @endif
                                     @else
                                         <span class="text-muted">-</span>
@@ -94,7 +94,7 @@
                                 </td>
                                 <td class="border-0 pe-4 text-end">
                                     <div class="dropdown" onclick="event.stopPropagation();">
-                                        <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                             {{ __('actions') }}
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
