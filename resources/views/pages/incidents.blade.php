@@ -26,15 +26,15 @@
     <!-- Search and Filter -->
     <form action="{{ route('incidents') }}" method="GET" class="mb-4">
         <div class="d-flex flex-wrap gap-3">
-            <div class="input-group" style="max-width: 300px;">
+            <div class="input-group filter-search">
                 <span class="input-group-text border-end-0">
                     <i class="bi bi-search text-muted"></i>
                 </span>
-                <input type="text" id="q" name="q" class="form-control border-start-0"
+                <input type="text" id="q" name="q" class="form-control border-start-0 filter-search"
                        value="{{ $q }}"
                        placeholder="{{ __('search') }}...">
             </div>
-            <div class="input-group" style="max-width: 180px;">
+            <div class="input-group filter-select">
                 <select name="type" class="form-select" onchange="this.form.submit()">
                     <option value="">{{ __('all_types') }}</option>
                     @foreach($types as $t)
@@ -42,7 +42,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="input-group" style="max-width: 180px;">
+            <div class="input-group filter-select">
                 <select name="status" class="form-select" onchange="this.form.submit()">
                     <option value="">{{ __('all_statuses') }}</option>
                     @foreach($statuses as $s)
@@ -57,52 +57,37 @@
             @endif
         </div>
     </form>
-    <div class="card border-0 shadow-sm rounded-3">
+    <div class="card shadow-sm">
         <div class="card-body p-0">
             <!-- Table -->
             <div class="table-responsive">
                 <table class="table table-striped table-hover align-middle mb-0">
                     <thead>
                         <tr>
-                            <th class="border-0 ps-4">
-                                <a href="{{ route('incidents', ['sort' => 'created_at', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc', 'type' => $type, 'status' => $status, 'q' => $q]) }}" class="text-decoration-none">
-                                    {{ __('date') }}
-                                    @if(request('sort', 'created_at') === 'created_at')
-                                        <i class="bi bi-chevron-{{ request('direction', 'desc') === 'asc' ? 'up' : 'down' }} ms-1"></i>
-                                    @endif
-                                </a>
+                            <th class="ps-4">
+                                {!! sort_link('created_at', __('date'), 'created_at') !!}
                             </th>
-                            <th class="border-0">
-                                <a href="{{ route('incidents', ['sort' => 'type', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc', 'type' => $type, 'status' => $status, 'q' => $q]) }}" class="text-decoration-none">
-                                    {{ __('type') }}
-                                    @if(request('sort') === 'type')
-                                        <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
-                                    @endif
-                                </a>
+                            <th>
+                                {!! sort_link('type', __('type')) !!}
                             </th>
-                            <th class="border-0">
-                                <a href="{{ route('incidents', ['sort' => 'status', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc', 'type' => $type, 'status' => $status, 'q' => $q]) }}" class="text-decoration-none">
-                                    {{ __('status') }}
-                                    @if(request('sort') === 'status')
-                                        <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
-                                    @endif
-                                </a>
+                            <th>
+                                {!! sort_link('status', __('status')) !!}
                             </th>
-                            <th class="border-0">{{ __('observer') }}</th>
-                            <th class="border-0">{{ __('message') }}</th>
-                            <th class="border-0 pe-4 text-end" style="width: 100px;"></th>
+                            <th>{{ __('observer') }}</th>
+                            <th>{{ __('message') }}</th>
+                            <th class="pe-4 text-end" style="width: 100px;"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($incidents as $incident)
                             <tr onclick="window.location='{{ route('incidents.edit', $incident->id) }}'" style="cursor: pointer;">
-                                <td class="border-0 ps-4">
+                                <td class="ps-4">
                                     <span class="text-muted small">{{ $incident->created_at->locale(setting('default_locale', 'en'))->timezone(setting('default_timezone', 'UTC'))->isoFormat('L LT') }}</span>
                                 </td>
-                                <td class="border-0">
+                                <td>
                                     <span class="badge bg-danger">{{ __($incident->type) }}</span>
                                 </td>
-                                <td class="border-0">
+                                <td>
                                     @php
                                         $statusColors = [
                                             'new' => 'primary',
@@ -113,7 +98,7 @@
                                     @endphp
                                     <span class="badge bg-{{ $statusColors[$incident->status] ?? 'secondary' }}">{{ __($incident->status) }}</span>
                                 </td>
-                                <td class="border-0">
+                                <td>
                                     @if($incident->observer)
                                         <a href="{{ route('observers.edit', $incident->observer->id) }}" class="text-decoration-none" onclick="event.stopPropagation();">
                                             {{ Str::limit($incident->observer->title ?: $incident->observer->url, 30) }}
@@ -122,10 +107,10 @@
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
-                                <td class="border-0">
+                                <td>
                                     <span class="text-muted">{{ Str::limit($incident->message, 50) }}</span>
                                 </td>
-                                <td class="border-0 pe-4 text-end">
+                                <td class="pe-4 text-end">
                                     <div class="dropdown" onclick="event.stopPropagation();">
                                         <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                             {{ __('actions') }}
@@ -154,7 +139,7 @@
                         @endforeach
                         @if($incidents->isEmpty())
                             <tr>
-                                <td colspan="6" class="border-0 text-center text-muted py-5">
+                                <td colspan="6" class="text-center text-muted py-5">
                                     <i class="bi bi-inbox display-4 d-block mb-3"></i>
                                     {{ __('no_records_found') }}
                                 </td>

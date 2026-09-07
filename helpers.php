@@ -13,12 +13,20 @@
 use App\Models\Setting;
 
 if (!function_exists('sort_link')) {
-    function sort_link($column, $label): string
+    /**
+     * Sortable table header link.
+     *
+     * The caret comes from the stylesheet, `.table > thead th a` draws it on hover and
+     * the "active" and "asc" classes tell it which column is sorted and in which way.
+     */
+    function sort_link(string $column, string $label, ?string $defaultColumn = null): string
     {
-        $direction = request('sort') === $column && request('direction') === 'asc' ? 'desc' : 'asc';
-        $url = request()->fullUrlWithQuery(['sort' => $column, 'direction' => $direction]);
-        $icon = '<i class="bi ' . ($direction === 'asc' ? 'bi-caret-up' : 'bi-caret-down') . ' ms-2"></i>';
-        return '<a href="' . $url . '">' . $label . $icon . '</a>';
+        $active = request('sort', $defaultColumn) === $column;
+        $ascending = $active && request('direction', 'desc') === 'asc';
+        $url = request()->fullUrlWithQuery(['sort' => $column, 'direction' => $ascending ? 'desc' : 'asc']);
+        $class = trim('table-sort ' . ($active ? 'active' : '') . ($ascending ? ' asc' : ''));
+
+        return '<a class="' . $class . '" href="' . e($url) . '">' . e($label) . '</a>';
     }
 }
 

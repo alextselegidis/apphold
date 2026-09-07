@@ -39,40 +39,35 @@
             <span class="input-group-text border-end-0">
                 <i class="bi bi-search text-muted"></i>
             </span>
-            <input type="text" id="q" name="q" class="form-control border-start-0"
+            <input type="text" id="q" name="q" class="form-control border-start-0 filter-search"
                    value="{{ $q }}"
-                   placeholder="{{ __('search') }}..." style="max-width: 300px;">
+                   placeholder="{{ __('search') }}...">
         </div>
     </form>
-    <div class="card border-0 shadow-sm rounded-3">
+    <div class="card shadow-sm">
         <div class="card-body p-0">
             <!-- Table -->
             <div class="table-responsive">
                 <table class="table table-striped table-hover align-middle mb-0">
                     <thead>
                         <tr>
-                            <th class="border-0 ps-4">
-                                <a href="{{ route('tags', ['sort' => 'name', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
-                                    {{ __('name') }}
-                                    @if(request('sort') === 'name')
-                                        <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
-                                    @endif
-                                </a>
+                            <th class="ps-4">
+                                {!! sort_link('name', __('name')) !!}
                             </th>
-                            <th class="border-0">{{ __('count') }}</th>
-                            <th class="border-0 pe-4 text-end" style="width: 100px;"></th>
+                            <th>{{ __('count') }}</th>
+                            <th class="pe-4 text-end" style="width: 100px;"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($tags as $tag)
                             <tr onclick="window.location='{{ route('tags.edit', $tag->id) }}'" style="cursor: pointer;">
-                                <td class="border-0 ps-4">
+                                <td class="ps-4">
                                     <span class="fw-medium">{{ $tag->name }}</span>
                                 </td>
-                                <td class="border-0">
+                                <td>
                                     <span class="badge bg-light text-dark">{{ $tag->count }}</span>
                                 </td>
-                                <td class="border-0 pe-4 text-end">
+                                <td class="pe-4 text-end">
                                     <div class="dropdown" onclick="event.stopPropagation();">
                                         <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                             {{ __('actions') }}
@@ -101,7 +96,7 @@
                         @endforeach
                         @if($tags->isEmpty())
                             <tr>
-                                <td colspan="3" class="border-0 text-center text-muted py-5">
+                                <td colspan="3" class="text-center text-muted py-5">
                                     <i class="bi bi-inbox display-4 d-block mb-3"></i>
                                     {{ __('no_records_found') }}
                                 </td>

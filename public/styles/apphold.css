@@ -23,31 +23,31 @@
     --ah-brand-dark: #5b32ad;
     --ah-brand-darker: #4e2b96;
     --ah-brand-light: #8560d8;
-    --ah-brand-tint: #efe9fc;
-    --ah-brand-tint-strong: #e0d4f8;
-    --ah-brand-text: #5b3bb5;
+    --ah-brand-tint: #e7dffb;
+    --ah-brand-tint-strong: #d6c6f4;
+    --ah-brand-text: #4f2fa8;
 
     /* Neutrals, slightly warmed towards the brand purple */
     --ah-ink: #232030;
-    --ah-ink-soft: #3b3748;
-    --ah-muted: #5c5870;
-    --ah-line: #e6e3ef;
-    --ah-line-soft: #f0eef6;
+    --ah-ink-soft: #2f2b3d;
+    --ah-muted: #4c4860;
+    --ah-line: #d5d0e4;
+    --ah-line-soft: #e4e0ef;
     --ah-surface: #ffffff;
     --ah-surface-alt: #faf9fd;
-    --ah-canvas: #f6f6fb;
+    --ah-canvas: #ffffff;
 
     /* Semantic tints, always paired with their own text color */
-    --ah-danger-tint: #fdecee;
-    --ah-danger-text: #a5202f;
-    --ah-success-tint: #e7f6f0;
-    --ah-success-text: #0f6b4f;
-    --ah-warning-tint: #fdf1de;
-    --ah-warning-text: #8a5300;
-    --ah-neutral-tint: #eeedf3;
+    --ah-danger-tint: #fbdde1;
+    --ah-danger-text: #8f1a27;
+    --ah-success-tint: #d6efe5;
+    --ah-success-text: #0b5b42;
+    --ah-warning-tint: #fbe6c8;
+    --ah-warning-text: #714300;
+    --ah-neutral-tint: #e2e0ea;
 
     /* Elevation */
-    --ah-shadow-sm: 0 1px 2px rgba(35, 32, 48, 0.06);
+    --ah-shadow-sm: 0 1px 3px rgba(35, 32, 48, 0.09);
     --ah-shadow: 0 6px 18px -6px rgba(35, 32, 48, 0.14);
     --ah-shadow-lg: 0 16px 40px -12px rgba(35, 32, 48, 0.22);
 
@@ -58,11 +58,11 @@
     --bs-link-color-rgb: 101, 56, 196;
     --bs-link-hover-color: #4e2b96;
     --bs-link-hover-color-rgb: 78, 43, 150;
-    --bs-body-color: #3b3748;
-    --bs-body-bg: #f6f6fb;
+    --bs-body-color: #2f2b3d;
+    --bs-body-bg: #ffffff;
     --bs-emphasis-color: #232030;
-    --bs-secondary-color: #5c5870;
-    --bs-border-color: #e6e3ef;
+    --bs-secondary-color: #4c4860;
+    --bs-border-color: #d5d0e4;
     --bs-border-radius-sm: 0.5rem;
     --bs-border-radius: 0.75rem;
     --bs-border-radius-lg: 1rem;
@@ -253,10 +253,15 @@ footer .border-top {
  * ---------------------------------------------------------------------------- */
 
 .card {
+    /* Bootstrap derives the header, footer and image radii from these two, keep them
+       in sync with the card radius or the child backgrounds bleed over the corners. */
+    --bs-card-border-radius: var(--bs-border-radius-lg);
+    --bs-card-inner-border-radius: calc(var(--bs-border-radius-lg) - 1px);
     background-color: var(--ah-surface);
     border: 1px solid var(--ah-line);
-    border-radius: var(--bs-border-radius-lg);
+    border-radius: var(--bs-card-border-radius);
     box-shadow: var(--ah-shadow-sm);
+    overflow: hidden;
 }
 
 .card .card-header {
@@ -319,16 +324,16 @@ footer .border-top {
 
 .table {
     --bs-table-bg: transparent;
-    --bs-table-striped-bg: #fbfafd;
-    --bs-table-hover-bg: rgba(109, 70, 201, 0.05);
-    --bs-table-border-color: var(--ah-line-soft);
+    --bs-table-striped-bg: #f6f4fb;
+    --bs-table-hover-bg: rgba(109, 70, 201, 0.07);
+    --bs-table-border-color: var(--ah-line);
     color: var(--ah-ink-soft);
     margin-bottom: 0;
 }
 
 .table > thead th {
     background-color: var(--ah-surface-alt);
-    color: var(--ah-ink-soft);
+    color: var(--ah-ink);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     font-size: 0.72rem;
@@ -340,11 +345,13 @@ footer .border-top {
     vertical-align: middle;
 }
 
+/* Sortable headers, the caret is drawn here and never in the markup */
 .table > thead th a {
     color: inherit;
     display: inline-flex;
     align-items: center;
     padding: 0.1rem 0;
+    text-decoration: none;
 }
 
 .table > thead th a:hover {
@@ -364,9 +371,23 @@ footer .border-top {
     opacity: 0.6;
 }
 
+.table > thead th a.active {
+    color: var(--ah-brand-text);
+}
+
+.table > thead th a.active::after {
+    opacity: 1;
+}
+
+.table > thead th a.active.asc::after {
+    content: '\F286';
+}
+
 .table > tbody td {
-    padding-top: 0.85rem;
-    padding-bottom: 0.85rem;
+    height: 3.25rem;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+    vertical-align: middle;
     font-variant-numeric: tabular-nums;
 }
 
@@ -374,17 +395,16 @@ footer .border-top {
     border-bottom-width: 0;
 }
 
-/* Round the table off inside its card */
-.card > .card-body.p-0 > .table-responsive {
-    border-radius: inherit;
+/* Round the table off inside its card. The card body has square corners, so the
+   radius is handed down explicitly, the scrolling wrapper then clips the header. */
+.card > .card-body.p-0:first-child > .table-responsive {
+    border-top-left-radius: var(--bs-card-inner-border-radius);
+    border-top-right-radius: var(--bs-card-inner-border-radius);
 }
 
-.card > .card-body.p-0 > .table-responsive > .table > thead tr:first-child th:first-child {
-    border-top-left-radius: inherit;
-}
-
-.card > .card-body.p-0 > .table-responsive > .table > thead tr:first-child th:last-child {
-    border-top-right-radius: inherit;
+.card > .card-body.p-0:last-child > .table-responsive {
+    border-bottom-left-radius: var(--bs-card-inner-border-radius);
+    border-bottom-right-radius: var(--bs-card-inner-border-radius);
 }
 
 /* ----------------------------------------------------------------------------
@@ -395,6 +415,7 @@ footer .border-top {
  * ---------------------------------------------------------------------------- */
 
 .badge {
+    border: 1px solid rgba(35, 32, 48, 0.12);
     border-radius: 50rem;
     font-weight: 600;
     font-size: 0.72rem;
@@ -492,8 +513,8 @@ footer .border-top {
     --bs-btn-border-color: var(--ah-line);
     --bs-btn-hover-bg: #e5e3ec;
     --bs-btn-hover-color: var(--ah-ink);
-    --bs-btn-hover-border-color: #dcd9e8;
-    --bs-btn-active-bg: #dcd9e8;
+    --bs-btn-hover-border-color: #c6c0d9;
+    --bs-btn-active-bg: #d9d5e6;
     --bs-btn-active-color: var(--ah-ink);
     --bs-btn-active-border-color: #d2cee2;
 }
@@ -503,8 +524,8 @@ footer .border-top {
     --bs-btn-border-color: var(--ah-line);
     --bs-btn-hover-bg: var(--ah-neutral-tint);
     --bs-btn-hover-color: var(--ah-ink);
-    --bs-btn-hover-border-color: #dcd9e8;
-    --bs-btn-active-bg: #dcd9e8;
+    --bs-btn-hover-border-color: #c6c0d9;
+    --bs-btn-active-bg: #d9d5e6;
     --bs-btn-active-color: var(--ah-ink);
 }
 
@@ -544,19 +565,29 @@ footer .border-top {
 .form-control,
 .form-select {
     background-color: var(--ah-surface);
-    border-color: #dcd9e8;
+    border-color: var(--ah-line);
     border-radius: 0.625rem;
     padding: 0.55rem 0.85rem;
     color: var(--ah-ink);
 }
 
+/* Search and filter bars above the lists, the controls keep a readable width on
+   desktop and take the full row on phones. */
+.filter-search {
+    max-width: 300px;
+}
+
+.filter-select {
+    max-width: 180px;
+}
+
 .form-control::placeholder {
-    color: #8d8899;
+    color: #625d75;
 }
 
 .input-group-text {
     background-color: var(--ah-surface);
-    border-color: #dcd9e8;
+    border-color: var(--ah-line);
     color: var(--ah-muted);
 }
 
@@ -706,17 +737,17 @@ footer .border-top {
     }
 
     .app-header .navbar {
-        padding-top: 0.35rem;
-        padding-bottom: 0.35rem;
-    }
-
-    .app-header .navbar-brand {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
     }
 
+    .app-header .navbar-brand {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+
     .app-header .navbar-nav .nav-link {
-        padding: 0.6rem 1rem;
+        padding: 0.5rem 1rem;
         margin: 0 0.15rem;
     }
 }
@@ -724,6 +755,13 @@ footer .border-top {
 /* ----------------------------------------------------------------------------
  * Mobile
  * ---------------------------------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+    .filter-search,
+    .filter-select {
+        max-width: none;
+    }
+}
 
 @media (max-width: 991.98px) {
     /* Comfortable touch targets */

@@ -29,7 +29,7 @@
         <div style="max-width: 600px" class="mx-auto my-4">
             <!-- Account Details Card -->
             <h5 class="text-dark fw-bold mb-3">{{ __('profile') }}</h5>
-            <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card shadow-sm mb-4">
                 <div class="card-body p-4">
                     <form action="{{ route('account.update') }}" method="POST" id="account-form">
                         @csrf
@@ -79,7 +79,7 @@
             </div>
             <!-- Change Password Section -->
             <h5 class="text-dark fw-bold mb-3">{{ __('password') }}</h5>
-            <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card shadow-sm mb-4">
                 <div class="card-body p-4">
                     <form action="{{ route('account.update') }}" method="POST" id="password-form">
                         @csrf
@@ -128,7 +128,7 @@
 
             <!-- Personal Access Tokens Section -->
             <h5 class="text-dark fw-bold mb-3">{{ __('personal_access_tokens') }}</h5>
-            <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card shadow-sm mb-4">
                 <div class="card-body p-4">
                     @if(session('new_token'))
                         <div class="alert alert-success">
@@ -174,7 +174,7 @@
                     <!-- Token List -->
                     @if($tokens->count() > 0)
                         <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table table-striped table-hover align-middle mb-0">
                             <thead>
                                 <tr>
                                     <th>{{ __('name') }}</th>

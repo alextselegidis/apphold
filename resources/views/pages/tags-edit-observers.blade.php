@@ -54,11 +54,11 @@
         </div>
         <!-- Main Content -->
         <div class="flex-grow-1">
-            <div class="card border-0 shadow-sm rounded-3">
+            <div class="card shadow-sm">
                 <div class="card-body p-4">
                     @if($observers->count())
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-striped table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
                                         <th class="text-muted small fw-medium">{{ __('title') }}</th>

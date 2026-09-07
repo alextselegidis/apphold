@@ -48,76 +48,56 @@
                     <span class="input-group-text border-end-0">
                         <i class="bi bi-search text-muted"></i>
                     </span>
-                    <input type="text" id="q" name="q" class="form-control border-start-0"
+                    <input type="text" id="q" name="q" class="form-control border-start-0 filter-search"
                            value="{{ $q }}"
-                           placeholder="{{ __('search') }}..." style="max-width: 300px;">
+                           placeholder="{{ __('search') }}...">
                 </div>
             </form>
 
-            <div class="card border-0 shadow-sm rounded-3">
+            <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <!-- Table -->
                     <div class="table-responsive">
                         <table class="table table-striped table-hover align-middle mb-0">
                             <thead>
                                 <tr>
-                                    <th class="border-0 ps-4">
-                                        <a href="{{ route('setup.users', ['sort' => 'name', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
-                                            {{ __('name') }}
-                                            @if(request('sort') === 'name')
-                                                <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
-                                            @endif
-                                        </a>
+                                    <th class="ps-4">
+                                        {!! sort_link('name', __('name')) !!}
                                     </th>
-                                    <th class="border-0">
-                                        <a href="{{ route('setup.users', ['sort' => 'email', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
-                                            {{ __('email') }}
-                                            @if(request('sort') === 'email')
-                                                <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
-                                            @endif
-                                        </a>
+                                    <th>
+                                        {!! sort_link('email', __('email')) !!}
                                     </th>
-                                    <th class="border-0">
-                                        <a href="{{ route('setup.users', ['sort' => 'role', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
-                                            {{ __('role') }}
-                                            @if(request('sort') === 'role')
-                                                <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
-                                            @endif
-                                        </a>
+                                    <th>
+                                        {!! sort_link('role', __('role')) !!}
                                     </th>
-                                    <th class="border-0">
-                                        <a href="{{ route('setup.users', ['sort' => 'is_active', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc']) }}" class="text-decoration-none">
-                                            {{ __('active') }}
-                                            @if(request('sort') === 'is_active')
-                                                <i class="bi bi-chevron-{{ request('direction') === 'asc' ? 'up' : 'down' }} ms-1"></i>
-                                            @endif
-                                        </a>
+                                    <th>
+                                        {!! sort_link('is_active', __('active')) !!}
                                     </th>
-                                    <th class="border-0 pe-4 text-end" style="width: 100px;"></th>
+                                    <th class="pe-4 text-end" style="width: 100px;"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($users as $user)
                                     <tr onclick="window.location='{{ route('setup.users.edit', $user->id) }}'" style="cursor: pointer;">
-                                        <td class="border-0 ps-4">
+                                        <td class="ps-4">
                                             <span class="fw-medium">{{ $user->name }}</span>
                                         </td>
-                                        <td class="border-0">
+                                        <td>
                                             <a href="mailto:{{ $user->email }}" class="text-decoration-none" onclick="event.stopPropagation();">
                                                 {{ $user->email }}
                                             </a>
                                         </td>
-                                        <td class="border-0">
+                                        <td>
                                             <span class="badge bg-light text-dark">{{ __($user->role) }}</span>
                                         </td>
-                                        <td class="border-0">
+                                        <td>
                                             @if($user->is_active)
                                                 <span class="badge bg-success-subtle text-success">{{ __('yes') }}</span>
                                             @else
                                                 <span class="badge bg-danger-subtle text-danger">{{ __('no') }}</span>
                                             @endif
                                         </td>
-                                        <td class="border-0 pe-4 text-end">
+                                        <td class="pe-4 text-end">
                                             <div class="dropdown" onclick="event.stopPropagation();">
                                                 <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                     {{ __('actions') }}
@@ -146,7 +126,7 @@
                                 @endforeach
                                 @if($users->isEmpty())
                                     <tr>
-                                        <td colspan="5" class="border-0 text-center text-muted py-5">
+                                        <td colspan="5" class="text-center text-muted py-5">
                                             <i class="bi bi-inbox display-4 d-block mb-3"></i>
                                             {{ __('no_records_found') }}
                                         </td>

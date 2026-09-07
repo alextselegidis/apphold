@@ -40,9 +40,9 @@
                     <span class="input-group-text px-3">
                         <i class="bi bi-search"></i>
                     </span>
-                        <input type="text" id="q" name="q" class="form-control border-start-0"
+                        <input type="text" id="q" name="q" class="form-control border-start-0 filter-search"
                                value="{{$q}}"
-                               placeholder="{{__('search')}}" autofocus tabindex="-1" style="max-width: 300px;">
+                               placeholder="{{__('search')}}" autofocus tabindex="-1">
                     </div>
                 </form>
 

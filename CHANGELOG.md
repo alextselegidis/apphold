@@ -4,6 +4,7 @@
 
 ### Added
 
+- Link the Apphold X account from the about page
 - Make the app installable as a PWA with a web app manifest, icons and a pass-through service worker
 - Show the latest posts of the Apphold blog on the about page, cached for a day
 - Verify the "remember me" login with feature tests
@@ -22,6 +23,15 @@
 - Refresh cards, buttons, inputs, dropdowns, toasts and modals with rounder corners, softer shadows
   and brand colored focus rings
 - Move the duplicated `<head>` markup of the three layouts into a shared partial
+- Raise the contrast of the whole interface: darker body text, visible table row separators and card
+  borders and deeper badge tints with an outline
+- Use a plain white page background, the cards now stand out through their border instead of a tint
+- Drop the leftover `border-0` utilities so every card and every table row shows its light border
+- Reduce the height of the main navigation bar, the desktop nav links no longer pad out to 1.5rem
+- Slightly smaller "APPHOLD" wordmark in the main navigation
+- Give every table the same row height and the same sort affordance, the caret now comes from the
+  stylesheet and the headers all go through the `sort_link()` helper
+- Sorting a list keeps the search and the filters that are already applied
 
 ### Fixed
 
@@ -30,6 +40,8 @@
 - The personal access token form and table no longer overflow on phones
 - Allow pinch zooming again on mobile devices
 - Keep table rows on a single line on phones and show an edge shadow while a table can still be scrolled
+- Card headers, table headers and card footers no longer bleed over the rounded card corners
+- Search and filter controls take the full row on phones instead of keeping their desktop widths
 - The installation specific cookie names now also hold with a cached config, previously every installation
   fell back to the same name and logged the others out
 

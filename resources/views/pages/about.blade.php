@@ -43,6 +43,10 @@
                     <i class="bi bi-github me-2"></i>
                     GitHub
                 </a>
+                <a href="https://x.com/apphold_org" class="btn btn-outline-primary btn-equal-width" target="_blank">
+                    <i class="bi bi-twitter-x me-2"></i>
+                    @@apphold_org
+                </a>
                 <a href="https://alextselegidis.com" class="btn btn-outline-secondary btn-equal-width" target="_blank">
                     <img src="images/alextselegidis-logo-16x16.png" alt="logo" class="me-2"/>
                     alextselegidis.com

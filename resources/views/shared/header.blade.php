@@ -17,7 +17,7 @@
                 <nav class="navbar navbar-expand-lg">
                     <a class="navbar-brand d-flex align-items-center p-0 m-0" href="{{ route('dashboard') }}">
                         <img src="images/logo.png" alt="Logo" class="me-2" style="height: 32px">
-                        <strong class="fs-4 text-white">APPHOLD</strong>
+                        <strong class="fs-5 text-white">APPHOLD</strong>
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#top-nav"
                             aria-controls="top-nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,28 +27,28 @@
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <!-- Dashboard -->
                             <li class="nav-item">
-                                <a class="nav-link text-white py-lg-4 px-lg-4 {{ request()->routeIs('dashboard') ? 'fw-bold' : '' }}" href="{{ route('dashboard') }}">
+                                <a class="nav-link text-white {{ request()->routeIs('dashboard') ? 'fw-bold' : '' }}" href="{{ route('dashboard') }}">
                                     <i class="bi bi-house me-2"></i>
                                     {{ __('dashboard') }}
                                 </a>
                             </li>
                             <!-- Observers -->
                             <li class="nav-item">
-                                <a class="nav-link text-white py-lg-4 px-lg-4 {{ request()->routeIs('observers*') ? 'fw-bold' : '' }}" href="{{ route('observers') }}">
+                                <a class="nav-link text-white {{ request()->routeIs('observers*') ? 'fw-bold' : '' }}" href="{{ route('observers') }}">
                                     <i class="bi bi-eye me-2"></i>
                                     {{ __('observers') }}
                                 </a>
                             </li>
                             <!-- Tags -->
                             <li class="nav-item">
-                                <a class="nav-link text-white py-lg-4 px-lg-4 {{ request()->routeIs('tags*') ? 'fw-bold' : '' }}" href="{{ route('tags') }}">
+                                <a class="nav-link text-white {{ request()->routeIs('tags*') ? 'fw-bold' : '' }}" href="{{ route('tags') }}">
                                     <i class="bi bi-tags me-2"></i>
                                     {{ __('tags') }}
                                 </a>
                             </li>
                             <!-- Incidents -->
                             <li class="nav-item">
-                                <a class="nav-link text-white py-lg-4 px-lg-4 {{ request()->routeIs('incidents*') ? 'fw-bold' : '' }}" href="{{ route('incidents') }}">
+                                <a class="nav-link text-white {{ request()->routeIs('incidents*') ? 'fw-bold' : '' }}" href="{{ route('incidents') }}">
                                     <i class="bi bi-exclamation-triangle me-2"></i>
                                     {{ __('incidents') }}
                                 </a>

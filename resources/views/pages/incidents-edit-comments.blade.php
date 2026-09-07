@@ -51,7 +51,7 @@
         <!-- Main Content -->
         <div class="flex-grow-1">
             <!-- Add Comment Form -->
-            <div class="card border-0 shadow-sm rounded-3 mb-4">
+            <div class="card shadow-sm mb-4">
                 <div class="card-body p-4">
                     <h6 class="mb-3">{{ __('add_comment') }}</h6>
                     <form action="{{ route('incidents.comments.store', $incident->id) }}" method="POST">
@@ -73,7 +73,7 @@
             </div>
 
             <!-- Comments List -->
-            <div class="card border-0 shadow-sm rounded-3">
+            <div class="card shadow-sm">
                 <div class="card-body p-4">
                     <h6 class="mb-3">{{ __('comments') }} ({{ $comments->count() }})</h6>
                     @if($comments->count())

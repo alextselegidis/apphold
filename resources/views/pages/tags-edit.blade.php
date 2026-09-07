@@ -54,7 +54,7 @@
         </div>
         <!-- Main Content -->
         <div class="flex-grow-1">
-            <div class="card border-0 shadow-sm rounded-3">
+            <div class="card shadow-sm">
                 <div class="card-body p-4">
                     <form action="{{ route('tags.update', ['tag' => $tag->id]) }}" method="POST" id="edit-form">
                         @csrf
