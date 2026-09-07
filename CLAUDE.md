@@ -51,7 +51,8 @@ Demo and default login: `admin@example.org` / `12345678`.
 ## Releases
 
 - Note user visible changes in `CHANGELOG.md` under `## [Unreleased]`. Wrap the entries at 120
-  characters, indenting the continuation lines by two spaces.
+  characters, indenting the continuation lines by two spaces. The heading keeps saying "Unreleased"
+  through the alpha and beta tags, only the final stable release renames it to the version and date.
 - Bump `APP_VERSION`. `config('app.version')` is the cache buster on the CSS and JS URLs, so without a
   bump returning users keep the old stylesheet.
 - `bash build.sh` produces the distributable zip.

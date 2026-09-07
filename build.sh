@@ -15,6 +15,13 @@ php_fpm() {
     docker compose exec -T php-fpm "$@"
 }
 
+# The zip carries the app version, so a build is uploadable as it is.
+
+VERSION=$(sed -n "s/.*'version' => env('APP_VERSION', '\([^']*\)').*/\1/p" config/app.php)
+ZIP="apphold-$VERSION.zip"
+
+echo "Building $ZIP"
+
 # Dependencies
 
 php_fpm composer install --no-dev --optimize-autoloader
@@ -34,7 +41,7 @@ php_fpm php artisan clear-compiled
 
 # Remove Various
 
-rm -f apphold-0.0.0.zip
+rm -f "$ZIP"
 
 rm -f public/hot
 
@@ -42,7 +49,7 @@ find . -name ".DS_Store" -delete
 
 # Zip Files
 
-zip -r apphold-0.0.0.zip . \
+zip -r "$ZIP" . \
     -x '.git/*' \
     -x '.idea/*' \
     -x '.run/*' \
