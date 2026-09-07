@@ -50,8 +50,8 @@ Demo and default login: `admin@example.org` / `12345678`.
 
 ## Releases
 
-- Note user visible changes in `CHANGELOG.md` under `## [Unreleased]`. A changelog entry is at most
-  120 lines long.
+- Note user visible changes in `CHANGELOG.md` under `## [Unreleased]`. Wrap the entries at 120
+  characters, indenting the continuation lines by two spaces.
 - Bump `APP_VERSION`. `config('app.version')` is the cache buster on the CSS and JS URLs, so without a
   bump returning users keep the old stylesheet.
 - `bash build.sh` produces the distributable zip.
@@ -59,4 +59,5 @@ Demo and default login: `admin@example.org` / `12345678`.
 ## Git
 
 - Do not add a `Co-Authored-By: Claude ...` trailer to commit messages. Commits carry no Claude attribution.
-- Do not create new branches unless the developer explicitly asks for one. Work on the current branch.
+- Do not create, switch or check out branches unless the developer explicitly asks for it. Always work on
+  the current branch.
