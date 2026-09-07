@@ -10,12 +10,17 @@
 
 ### Changed
 
-- Scope the session and "remember me" cookie names to each installation so two apps on the same domain no longer log each other out
+- Scope the session and "remember me" cookie names to each installation so two apps on the same domain
+  no longer log each other out
 - Stop setting the framework's shared `XSRF-TOKEN` cookie, which was also mixed up between apps on the same domain
-- Rebuild the stylesheet around a single set of design tokens: brand purple, warm neutrals, semantic tints, elevation and radius scales
-- Deepen the brand purple so white text on the navigation and on primary buttons meets accessibility contrast (was 3.8:1, now 6.2:1)
-- Replace the dark table headers with light small caps headers and the solid badges with tinted ones, all above 5.5:1 contrast
-- Refresh cards, buttons, inputs, dropdowns, toasts and modals with rounder corners, softer shadows and brand colored focus rings
+- Rebuild the stylesheet around a single set of design tokens: brand purple, warm neutrals, semantic
+  tints, elevation and radius scales
+- Deepen the brand purple so white text on the navigation and on primary buttons meets accessibility
+  contrast (was 3.8:1, now 6.2:1)
+- Replace the dark table headers with light small caps headers and the solid badges with tinted ones,
+  all above 5.5:1 contrast
+- Refresh cards, buttons, inputs, dropdowns, toasts and modals with rounder corners, softer shadows
+  and brand colored focus rings
 - Move the duplicated `<head>` markup of the three layouts into a shared partial
 
 ### Fixed
@@ -25,6 +30,8 @@
 - The personal access token form and table no longer overflow on phones
 - Allow pinch zooming again on mobile devices
 - Keep table rows on a single line on phones and show an edge shadow while a table can still be scrolled
+- The installation specific cookie names now also hold with a cached config, previously every installation
+  fell back to the same name and logged the others out
 
 
 ## [1.0.0] - 2026-03-26

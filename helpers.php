@@ -60,9 +60,15 @@ if (!function_exists('app_instance_id')) {
      * Used to suffix cookie names so that two installations sharing a domain cannot
      * overwrite each other's session or "remember me" cookies. The app key is part of
      * the hash because APP_URL is not always filled in, while the key always is.
+     *
+     * Reads the config and not env(), a cached config skips loading the .env file and
+     * env() would then return null on every installation, giving them all the same id.
      */
     function app_instance_id(): string
     {
-        return substr(sha1(env('APP_URL', '') . env('APP_KEY', '')), 0, 8);
+        $url = config('app.url') ?? env('APP_URL', '');
+        $key = config('app.key') ?? env('APP_KEY', '');
+
+        return substr(sha1($url . $key), 0, 8);
     }
 }

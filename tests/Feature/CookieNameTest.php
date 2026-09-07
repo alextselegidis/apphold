@@ -25,6 +25,14 @@ class CookieNameTest extends TestCase
         $this->assertStringEndsWith(app_instance_id(), $name);
     }
 
+    public function test_instance_id_is_derived_from_the_app_url_and_key(): void
+    {
+        $this->assertSame(substr(sha1(config('app.url').config('app.key')), 0, 8), app_instance_id());
+
+        // A cached config does not load the .env file, env() would hash an empty string.
+        $this->assertNotSame(substr(sha1(''), 0, 8), app_instance_id());
+    }
+
     public function test_the_shared_xsrf_token_cookie_is_not_set(): void
     {
         $response = $this->get(route('login'));
