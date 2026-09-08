@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest an improvement or a new capability for Apphold
+labels: ['enhancement']
+body:
+    - type: textarea
+      id: problem
+      attributes:
+          label: What problem does this solve?
+          description: Describe the situation you are in before describing the solution.
+      validations:
+          required: true
+    - type: textarea
+      id: solution
+      attributes:
+          label: Proposed solution
+          description: How would you like Apphold to behave?
+      validations:
+          required: true
+    - type: textarea
+      id: alternatives
+      attributes:
+          label: Alternatives considered
+          description: Workarounds you already tried, or other approaches you rejected.
+      validations:
+          required: false

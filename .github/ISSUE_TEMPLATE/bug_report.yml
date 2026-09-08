@@ -1,0 +1,49 @@
+name: Bug report
+description: Something in Apphold does not work as expected
+labels: ['bug']
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Thanks for the report. Please do not use this form for security issues, follow
+              [SECURITY.md](https://github.com/alextselegidis/apphold/blob/main/SECURITY.md) instead.
+    - type: textarea
+      id: description
+      attributes:
+          label: What happened?
+          description: Describe the problem and what you expected to happen instead.
+      validations:
+          required: true
+    - type: textarea
+      id: steps
+      attributes:
+          label: Steps to reproduce
+          placeholder: |
+              1. Go to ...
+              2. Click on ...
+              3. See the error
+      validations:
+          required: true
+    - type: input
+      id: version
+      attributes:
+          label: Apphold version
+          placeholder: 1.0.1-beta.1
+      validations:
+          required: true
+    - type: input
+      id: environment
+      attributes:
+          label: Environment
+          description: PHP and MySQL versions, web server, and whether you run Docker or a plain server.
+          placeholder: PHP 8.3, MySQL 8.0, nginx, Docker
+      validations:
+          required: true
+    - type: textarea
+      id: logs
+      attributes:
+          label: Logs
+          description: Relevant output from `storage/logs/laravel.log` or the browser console.
+          render: shell
+      validations:
+          required: false
